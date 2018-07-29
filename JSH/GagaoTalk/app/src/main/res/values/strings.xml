@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">GagaoTalk</string>
+    <string name="facebook_app_id">495049020944767</string>
+    <string name="fb_login_protocol_scheme">fb495049020944767</string>
 </resources>

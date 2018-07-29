@@ -26,8 +26,7 @@
         </activity>
         <activity android:name=".MainActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".SignUpActivity"
-            android:parentActivityName=".LoginActivity" /> <!--업버튼클릭시 돌아갈 액티비티 정의-->
+        <activity android:name=".SignUpActivity"/>
     </application>
 
 </manifest>

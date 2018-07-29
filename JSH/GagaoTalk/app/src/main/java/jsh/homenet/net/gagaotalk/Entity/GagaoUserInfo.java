@@ -3,17 +3,12 @@ package jsh.homenet.net.gagaotalk.Entity;
 /**
  * 사용자 클래스
  */
-public class UserInfo {
+public class GagaoUserInfo {
 
     /**
      * 아이디
      */
     private String identity;
-
-    /**
-     * 패스워드
-     */
-    private String password;
 
     /**
      * 이름
@@ -30,7 +25,16 @@ public class UserInfo {
      */
     private String email;
 
-    public UserInfo(String identity)
+    /**
+     * 상태 메시지
+     */
+    private String message;
+
+    public GagaoUserInfo()
+    {
+
+    }
+    public GagaoUserInfo(String identity)
     {
         this.identity = identity;
     }
@@ -41,14 +45,6 @@ public class UserInfo {
 
     public void setIdentity(String identity) {
         this.identity = identity;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getName() {
@@ -73,5 +69,13 @@ public class UserInfo {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }
