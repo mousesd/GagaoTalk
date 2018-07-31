@@ -1,15 +1,10 @@
 package jbk.homenet.net.gagaotalk;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,29 +12,44 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-import com.google.firebase.auth.ActionCodeSettings;
-import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthActionCodeException;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * AuthActivity - 인증 Activity
  */
-public class MainActivity  extends BaseActivity implements
+public class AuthActivity  extends BaseActivity implements
         View.OnClickListener {
 
+    //region == [ Fields ] ==
+
+    /**
+     * Debug Tag
+     */
     private static final String TAG = "EmailPassword";
 
+    /**
+     * 상태 TextView
+     */
     private TextView mStatusTextView;
+
+    /**
+     * 상태Detail TextView
+     */
     private TextView mDetailTextView;
+
+    /**
+     * Email TextView
+     */
     private EditText mEmailField;
+
+    /**
+     * Password TextView
+     */
     private EditText mPasswordField;
 
     /**
@@ -47,16 +57,19 @@ public class MainActivity  extends BaseActivity implements
      */
     private FirebaseAuth mAuth;
 
-    //region  -- onCreate() : onCreate --
+    //endregion == [ Fields ] ==
 
+    //region == [ Override Methods ] ==
+
+    //region  -- onCreate() : onCreate --
     /**
      * onCreate
-     * @param savedInstanceState
+     * @param savedInstanceState savedInstanceState
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_auth);
 
         // Views
         mStatusTextView = findViewById(R.id.status);
@@ -74,10 +87,12 @@ public class MainActivity  extends BaseActivity implements
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
     }
-
     //endregion
 
-    // [START on_start_check_user]
+    //region -- onStart() : onStart --
+    /**
+     * onStart
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -85,17 +100,47 @@ public class MainActivity  extends BaseActivity implements
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
-    // [END on_start_check_user]
+    //endregion -- onStart() : onStart --
 
+    //region -- onClick() : onClick --
+    /**
+     * onClick
+     * @param v View
+     */
+    @Override
+    public void onClick(View v) {
+        int i = v.getId();
+        if (i == R.id.email_create_account_button) {
+            createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        } else if (i == R.id.email_sign_in_button) {
+            signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+        } else if (i == R.id.sign_out_button) {
+            signOut();
+        } else if (i == R.id.verify_email_button) {
+            sendEmailVerification();
+        }
+    }
+    //endregion -- onClick() : onClick --
+
+    //endregion == [ View Override Methods ] ==
+
+    //region == [ Methods ] ==
+
+    //region -- createAccount(String, String) : 인증 생성 --
+    /**
+     * 인증 생성
+     * @param email E mail
+     * @param password password
+     */
     private void createAccount(String email, String password) {
         Log.d(TAG, "createAccount:" + email);
+
         if (!validateForm()) {
             return;
         }
 
         showProgressDialog();
 
-        // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -105,28 +150,31 @@ public class MainActivity  extends BaseActivity implements
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
-                        } else if  (task.getException().getMessage().equals("The email address is already in use by another account.")){
+                        } else if  (task.getException() != null &&  task.getException().getMessage().equals("The email address is already in use by another account.")){
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "이미 등록되어 있는 메일입니다.",
+                            Toast.makeText(AuthActivity.this, "이미 등록되어 있는 메일입니다.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(AuthActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
 
-                        // [START_EXCLUDE]
                         hideProgressDialog();
-                        // [END_EXCLUDE]
                     }
                 });
-        // [END create_user_with_email]
     }
+    //endregion  -- createAccount() : 인증 생성 --
 
+    //region -- signIn (String, String) : 로그인 --
+    /**
+     * 로그인
+     * @param email E mail
+     * @param password password
+     */
     private void signIn(String email, String password) {
         Log.d(TAG, "signIn:" + email);
         if (!validateForm()) {
@@ -148,27 +196,35 @@ public class MainActivity  extends BaseActivity implements
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                            Toast.makeText(AuthActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
                             updateUI(null);
                         }
 
-                        // [START_EXCLUDE]
                         if (!task.isSuccessful()) {
                             mStatusTextView.setText(R.string.auth_failed);
                         }
                         hideProgressDialog();
-                        // [END_EXCLUDE]
+
                     }
                 });
-        // [END sign_in_with_email]
     }
+    //endregion -- signIn (String, String) : 로그인 --
 
+    //region -- signOut() : 로그아웃 --
+    /**
+     * 로그아웃
+     */
     private void signOut() {
         mAuth.signOut();
         updateUI(null);
     }
+    //endregion -- signOut() : 로그아웃 --
 
+    //region -- ???? sendEmailVerification() --
+    /**
+     *  ???????????????????????????
+     */
     private void sendEmailVerification() {
         // Disable button
         findViewById(R.id.verify_email_button).setEnabled(false);
@@ -176,35 +232,37 @@ public class MainActivity  extends BaseActivity implements
         // Send verification email
         // [START send_email_verification]
         final FirebaseUser user = mAuth.getCurrentUser();
-        user.sendEmailVerification()
-                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        // [START_EXCLUDE]
-                        // Re-enable button
-                        findViewById(R.id.verify_email_button).setEnabled(true);
 
-                        //region DESCRIPTION_REGION
+        if (user != null){
+            user.sendEmailVerification()
+                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            // Re-enable button
+                            findViewById(R.id.verify_email_button).setEnabled(true);
 
-
-                        //endregion
-
-                        if (task.isSuccessful()) {
-                            Toast.makeText(MainActivity.this,
-                                    "Verification email sent to " + user.getEmail(),
-                                    Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e(TAG, "sendEmailVerification", task.getException());
-                            Toast.makeText(MainActivity.this,
-                                    "Failed to send verification email.",
-                                    Toast.LENGTH_SHORT).show();
+                            if (task.isSuccessful()) {
+                                Toast.makeText(AuthActivity.this,
+                                        "Verification email sent to " + user.getEmail(),
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                Log.e(TAG, "sendEmailVerification", task.getException());
+                                Toast.makeText(AuthActivity.this,
+                                        "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        // [END_EXCLUDE]
-                    }
                 });
-        // [END send_email_verification]
+        }
     }
+    //endregion -- ???? sendEmailVerification() --
 
+    //region -- checkEmail(String) : 이메일 유효여부 확인 --
+    /**
+     * 이메일 유효여부 확인
+     * @param email
+     * @return 이메일 유효여부
+     */
     private boolean checkEmail(String email){
         String regex = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
         Pattern p = Pattern.compile(regex);
@@ -212,7 +270,13 @@ public class MainActivity  extends BaseActivity implements
         boolean isNormal = m.matches();
         return isNormal;
     }
+    //endregion -- checkEmail(String) : 이메일 유효여부 확인 --
 
+    //region -- validateForm() : 입력값 유효여부 확인 --
+    /**
+     * 입력값 유효여부 확인
+     * @return
+     */
     private boolean validateForm() {
         boolean valid = true;
 
@@ -241,7 +305,13 @@ public class MainActivity  extends BaseActivity implements
 
         return valid;
     }
+    //endregion -- validateForm() : 입력값 유효여부 확인 --
 
+    //region -- updateUI(FirebaseUser) : 로그인 여부에 따른 UI 변경 --
+    /**
+     * 로그인 여부에 따른 UI 변경
+     * @param user FirebaseUser정보
+     */
     private void updateUI(FirebaseUser user) {
         hideProgressDialog();
         if (user != null) {
@@ -249,7 +319,7 @@ public class MainActivity  extends BaseActivity implements
                     user.getEmail(), user.isEmailVerified()));
             mDetailTextView.setText(getString(R.string.firebase_status_fmt, user.getUid()));
 
-            findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
+        findViewById(R.id.email_password_buttons).setVisibility(View.GONE);
             findViewById(R.id.email_password_fields).setVisibility(View.GONE);
             findViewById(R.id.signed_in_buttons).setVisibility(View.VISIBLE);
 
@@ -263,18 +333,7 @@ public class MainActivity  extends BaseActivity implements
             findViewById(R.id.signed_in_buttons).setVisibility(View.GONE);
         }
     }
+    //endregion -- updateUI(FirebaseUser) : 로그인 여부에 따른 UI 변경 --
 
-    @Override
-    public void onClick(View v) {
-        int i = v.getId();
-        if (i == R.id.email_create_account_button) {
-            createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if (i == R.id.email_sign_in_button) {
-            signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
-        } else if (i == R.id.sign_out_button) {
-            signOut();
-        } else if (i == R.id.verify_email_button) {
-            sendEmailVerification();
-        }
-    }
+    //endregion == [ Methods ] ==
 }
