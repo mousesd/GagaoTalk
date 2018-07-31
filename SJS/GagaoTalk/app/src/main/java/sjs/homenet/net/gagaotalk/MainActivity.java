@@ -19,13 +19,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        Button button = (Button)findViewById(R.id.email_create_account_button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(), SginUpActivity.class);
-//            }
-//        });
+        Button button = (Button)findViewById(R.id.email_create_account_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, SginUpActivity.class);
+                MainActivity.this.startActivity(intent);
+            }
+        });
 
     }
 }
