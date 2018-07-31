@@ -16,6 +16,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SginUpActivity"
+            android:label ="회원가입">
+
+        </activity>
     </application>
 
 </manifest>
