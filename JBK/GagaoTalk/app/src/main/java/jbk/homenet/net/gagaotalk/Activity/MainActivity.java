@@ -3,6 +3,8 @@ package jbk.homenet.net.gagaotalk.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -37,6 +39,10 @@ public class MainActivity  extends BaseActivity
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ActionBar myActionBar = getSupportActionBar(); // to get activity actionbar
+
+        if (myActionBar != null)
+            myActionBar.hide();
 
         FirbaseService.FirebaseAuth = FirebaseAuth.getInstance();
     }
@@ -70,7 +76,7 @@ public class MainActivity  extends BaseActivity
 
                     if (CommonService.UserInfo == null) {
                         //# 사용자 정보 없으면 사용자 설정 Activity
-                        Intent intent = new Intent(MainActivity.this, AuthActivity.class);
+                        Intent intent = new Intent(MainActivity.this, UserActivity.class);
 
                         startActivity(intent);
                         finish();

@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.google.firebase.database.FirebaseDatabase;
 
 import jbk.homenet.net.gagaotalk.Class.CommonService;
+import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.Class.UserInfo;
 import jbk.homenet.net.gagaotalk.R;
 
@@ -40,22 +41,33 @@ public class UserActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
-        Intent intent = getIntent();
+        if (CommonService.UserInfo != null)
+        {
+            this.uid = CommonService.UserInfo.uid;
+            this.email = CommonService.UserInfo.email;
 
-        this.uid = intent.getStringExtra("uid");
-        this.email = intent.getStringExtra("email");
+            this.name = CommonService.UserInfo.name;
+            this.phoneNum = CommonService.UserInfo.phoneNum;
+            this.stateMsg = CommonService.UserInfo.stateMsg;
+        }else{
 
-        this.name = intent.getStringExtra("name");
-        this.phoneNum = intent.getStringExtra("phoneNum");
-        this.stateMsg = intent.getStringExtra("stateMsg");
+            Intent intent = getIntent();
+
+            this.uid = FirbaseService.FirebaseUser.getUid();
+            this.email = FirbaseService.FirebaseUser.getEmail();
+
+//            this.name = intent.getStringExtra("name");
+//            this.phoneNum = intent.getStringExtra("phoneNum");
+//            this.stateMsg = intent.getStringExtra("stateMsg");
+        }
 
         this.txtName = findViewById(R.id.name);
         this.txtPhoneNum = findViewById(R.id.phoneNum);
         this.txtStateMsg = findViewById(R.id.stateMsg);
 
         this.txtName.setText(this.name);
-        this.txtPhoneNum.setText(this.phoneNum);
-        this.txtStateMsg.setText(this.stateMsg);
+//        this.txtPhoneNum.setText(this.phoneNum);
+//        this.txtStateMsg.setText(this.stateMsg);
 
         findViewById(R.id.btnUserCommit).setOnClickListener(this);
     }
