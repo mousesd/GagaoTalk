@@ -1,4 +1,4 @@
-package jbk.homenet.net.gagaotalk;
+package jbk.homenet.net.gagaotalk.Activity;
 
 
 import android.app.ProgressDialog;
@@ -7,6 +7,8 @@ import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import jbk.homenet.net.gagaotalk.R;
 
 public class BaseActivity extends AppCompatActivity {
 
