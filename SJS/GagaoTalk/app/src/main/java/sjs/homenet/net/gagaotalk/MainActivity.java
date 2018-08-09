@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button buttonCreateAccount = (Button)findViewById(R.id.email_create_account_button);
         Button buttonSignIn = (Button)findViewById(R.id.email_sign_in_button);
-        Button buttonGoogleSignIn = (Button)findViewById(R.id.googlesign_in_button);
+        //Button buttonGoogleSignIn = (Button)findViewById(R.id.googlesign_in_button);
 
         buttonCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,13 +64,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        buttonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                startActivityForResult(signInIntent, RC_SIGN_IN);
-            }
-        });
+//        buttonGoogleSignIn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+//                startActivityForResult(signInIntent, RC_SIGN_IN);
+//            }
+//        });
 
         // [START config_signin]
         // Configure Google Sign In
@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
+
     }
 
     private void signIn(String email, String password) {

@@ -45,6 +45,7 @@ public class SginUpActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
     private void createAccount(String email, String password) {

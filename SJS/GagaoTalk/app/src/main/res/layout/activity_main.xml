@@ -86,14 +86,6 @@
             android:paddingLeft="16sp"
             android:paddingRight="16sp">
 
-            <com.google.android.gms.common.SignInButton
-                android:id="@+id/googlesign_in_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="visible"
-                tools:visibility="gone" />
-
         </LinearLayout>
 
         <LinearLayout
@@ -127,5 +119,6 @@
         </LinearLayout>
 
     </RelativeLayout>
+
 
 </LinearLayout>
