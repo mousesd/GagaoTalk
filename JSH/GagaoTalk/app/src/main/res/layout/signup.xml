@@ -35,7 +35,9 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingRight="10dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <!-- 아이디 -->
                 <LinearLayout
@@ -58,10 +60,32 @@
                         android:hint="Identity"
                         android:inputType="text"
                         android:textSize="16dp" />
-
                 </LinearLayout>
 
-                <!-- 아이디 -->
+                <!-- 패스워드 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/user" />
+
+                    <EditText
+                        android:id="@+id/inputPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:hint="Password"
+                        android:inputType="textPassword"
+                        android:textSize="16dp" />
+                </LinearLayout>
+
+                <!-- 이름 -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -80,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:hint="Username"
-                        android:inputType="text"
+                        android:inputType="textPersonName"
                         android:textSize="16dp" />
 
                 </LinearLayout>
@@ -104,10 +128,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="15dp"
                         android:hint="Email Address"
-                        android:inputType="text"
+                        android:inputType="textEmailAddress"
                         android:textSize="16dp"
-                        android:editable="false"
-                        android:focusable="false"
                         />
                 </LinearLayout>
 
@@ -134,7 +156,7 @@
                         android:textSize="16dp" />
                 </LinearLayout>
 
-                <!--상태메시지 번호-->
+                <!--상태메시지-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -169,7 +191,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="인증하기" />
+                        android:text="가입하기" />
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

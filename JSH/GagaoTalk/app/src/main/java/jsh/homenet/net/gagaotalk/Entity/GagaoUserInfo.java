@@ -6,9 +6,19 @@ package jsh.homenet.net.gagaotalk.Entity;
 public class GagaoUserInfo {
 
     /**
+     * 고유 식별자 (파이어베이스 Uid)
+     */
+    private String uniqueIdentifier;
+
+    /**
      * 아이디
      */
     private String identity;
+
+    /**
+     * 아이디
+     */
+    private String password;
 
     /**
      * 이름
@@ -34,9 +44,17 @@ public class GagaoUserInfo {
     {
 
     }
-    public GagaoUserInfo(String identity)
+    public GagaoUserInfo(String uniqueIdentifier)
     {
-        this.identity = identity;
+        this.uniqueIdentifier = uniqueIdentifier;
+    }
+
+    public String getUniqueIdentifier() {
+        return uniqueIdentifier;
+    }
+
+    public void setUniqueIdentifier(String uniqueIdentifier) {
+        this.uniqueIdentifier = uniqueIdentifier;
     }
 
     public String getIdentity() {
@@ -45,6 +63,14 @@ public class GagaoUserInfo {
 
     public void setIdentity(String identity) {
         this.identity = identity;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getName() {
