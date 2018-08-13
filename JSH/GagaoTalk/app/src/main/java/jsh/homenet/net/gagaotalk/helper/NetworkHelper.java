@@ -1,4 +1,4 @@
-package jsh.homenet.net.gagaotalk.Helper;
+package jsh.homenet.net.gagaotalk.helper;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

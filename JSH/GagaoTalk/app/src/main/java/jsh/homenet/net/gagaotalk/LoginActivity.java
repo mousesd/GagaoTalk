@@ -16,7 +16,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.login.Login;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -35,8 +34,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 
 import java.util.Arrays;
 
-import jsh.homenet.net.gagaotalk.Entity.GagaoUserInfo;
-import jsh.homenet.net.gagaotalk.Helper.DataBaseHelper;
+import jsh.homenet.net.gagaotalk.entity.GagaoUserInfo;
+import jsh.homenet.net.gagaotalk.helper.DataBaseHelper;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -198,7 +197,7 @@ public class LoginActivity extends AppCompatActivity {
                 GoogleLogin(account);
 
             } catch (ApiException e) {
-
+                Log.w("알림", "Google sign in failed", e);
             }
         }
 

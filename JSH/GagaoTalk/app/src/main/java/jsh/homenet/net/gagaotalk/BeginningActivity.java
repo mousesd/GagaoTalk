@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import jsh.homenet.net.gagaotalk.Helper.NetworkHelper;
+import jsh.homenet.net.gagaotalk.helper.NetworkHelper;
 
 public class BeginningActivity extends AppCompatActivity {
 

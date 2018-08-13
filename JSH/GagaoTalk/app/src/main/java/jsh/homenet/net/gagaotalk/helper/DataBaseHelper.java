@@ -1,4 +1,4 @@
-package jsh.homenet.net.gagaotalk.Helper;
+package jsh.homenet.net.gagaotalk.helper;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -6,7 +6,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import jsh.homenet.net.gagaotalk.Entity.GagaoUserInfo;
+import jsh.homenet.net.gagaotalk.entity.GagaoUserInfo;
 import jsh.homenet.net.gagaotalk.IUserInfoCallBack;
 
 public class DataBaseHelper {

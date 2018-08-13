@@ -1,4 +1,4 @@
-package jsh.homenet.net.gagaotalk.Entity;
+package jsh.homenet.net.gagaotalk.entity;
 
 /**
  * 사용자 클래스
