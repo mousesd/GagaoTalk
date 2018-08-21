@@ -32,10 +32,10 @@ public class SginUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sgin_up);
 
-        mEmailField = findViewById(R.id.editEamil);
-        mEmailField = findViewById(R.id.editPassword);
+        mEmailField = findViewById(R.id.field_email);
+        mEmailField = findViewById(R.id.field_password);
 
-        Button buttonCreateId = (Button)findViewById(R.id.button_create);
+        Button buttonCreateId = (Button)findViewById(R.id.email_create_account_button);
 
         buttonCreateId.setOnClickListener(new View.OnClickListener() {
             @Override
