@@ -1,67 +1,129 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SginUpActivity">
+    android:background="@color/grey_100"
+    android:orientation="vertical"
+    android:weightSum="4">
 
-    <TextView
-        android:id="@+id/textViewEmail"
-        android:layout_width="68sp"
-        android:layout_height="21sp"
-        android:layout_marginTop="8sp"
-        android:textSize="15sp"
-        android:text="@string/Email"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="30sp" />
-
-    <EditText
-        android:id="@+id/field_email"
-        android:layout_width="69sp"
-        android:layout_height="22sp"
-        android:layout_marginStart="20sp"
-        android:layout_marginTop="8sp"
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:hint="@string/hint_email"
-        android:inputType="textEmailAddress"
-        app:layout_constraintStart_toEndOf="@+id/textViewEmail"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@color/grey_300"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/textViewPassword"
-        android:layout_width="68sp"
-        android:layout_height="21sp"
-        android:layout_marginTop="8sp"
-        android:textSize="15sp"
-        android:text="@string/Password"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEmail"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="30sp" />
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="35dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="9dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp">
 
-    <EditText
-        android:id="@+id/field_password"
-        android:layout_width="70sp"
-        android:layout_height="20sp"
-        android:layout_marginStart="20sp"
-        android:layout_marginTop="8sp"
-        android:layout_weight="1"
-        android:hint="@string/hint_email"
-        android:inputType="textPassword"
-        app:layout_constraintStart_toEndOf="@+id/textViewPassword"
-        app:layout_constraintTop_toBottomOf="@+id/field_email" />
+            <TextView
+                android:id="@+id/textViewEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Email"
+                android:textSize="20sp" />
 
-    <Button
-        android:id="@+id/button_create"
-        android:layout_width="150sp"
-        android:layout_height="40sp"
-        android:textSize="30sp"
-        android:layout_marginBottom="44sp"
-        android:layout_marginEnd="8sp"
-        android:layout_marginStart="8sp"
-        android:text="@string/SignUp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</android.support.constraint.ConstraintLayout>
+            <EditText
+                android:id="@+id/field_email"
+                android:layout_width="281sp"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="54dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp">
+
+            <TextView
+                android:id="@+id/textViewPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/Password"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/field_password"
+                android:layout_width="281sp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="95dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp">
+
+            <TextView
+                android:id="@+id/textViewname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/userName"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/field_name"
+                android:layout_width="281sp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="139dp"
+            android:orientation="horizontal"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp">
+
+            <TextView
+                android:id="@+id/textView_phone_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/phone_title_text"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/field_phone_number"
+                android:layout_width="281sp"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:orientation="horizontal"
+            android:paddingLeft="16sp"
+            android:paddingRight="16sp">
+
+            <Button
+                android:id="@+id/email_create_account_button"
+                android:layout_width="150sp"
+                android:layout_height="45sp"
+                android:layout_weight="1"
+                android:text="@string/SignUp"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -32,25 +32,71 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <EditText android:id="@+id/loginIdentity"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:hint="Identity" />
+                </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <EditText android:id="@+id/loginPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:hint="Password" />
+
                 </android.support.design.widget.TextInputLayout>
+
+                <CheckBox
+                    android:id="@+id/chkKeepLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="로그인 유지하기"/>
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonLogin"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorYellow"
+                    android:text="로그인"/>
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/buttonLoginGoogle"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
                     android:text="Sign in with Google" />
 
                 <android.support.v7.widget.AppCompatButton
                     android:id="@+id/buttonLoginFacebook"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
                     android:text="Sign in with Facebook" />
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:text="만약 계정이 없다면 아래 버튼을 눌러 회원가입하세요 ^^"
+                    android:textSize="16dip" />
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/buttonSignUp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorAccent"
+                    android:text="회원가입" />
 
             </LinearLayout>
         </ScrollView>
