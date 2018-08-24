@@ -51,10 +51,10 @@ public class UserActivity extends BaseActivity implements
             this.stateMsg = CommonService.UserInfo.stateMsg;
         }else{
 
-            Intent intent = getIntent();
-
+//            Intent intent = getIntent();
+//
             this.uid = FirbaseService.FirebaseUser.getUid();
-            this.email = FirbaseService.FirebaseUser.getEmail();
+//            this.email = FirbaseService.FirebaseUser.getEmail();
 
 //            this.name = intent.getStringExtra("name");
 //            this.phoneNum = intent.getStringExtra("phoneNum");

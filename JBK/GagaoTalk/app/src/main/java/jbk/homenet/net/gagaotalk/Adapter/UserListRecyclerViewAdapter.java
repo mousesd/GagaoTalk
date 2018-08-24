@@ -1,4 +1,4 @@
-package jbk.homenet.net.gagaotalk.Fragment;
+package jbk.homenet.net.gagaotalk.Adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,23 +6,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.List;
+
 import jbk.homenet.net.gagaotalk.Fragment.MsgListFragment.OnListFragmentInteractionListener;
 import jbk.homenet.net.gagaotalk.Fragment.dummy.DummyContent.DummyItem;
 import jbk.homenet.net.gagaotalk.R;
-
-import java.util.List;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MsgListRecyclerViewAdapter extends RecyclerView.Adapter<MsgListRecyclerViewAdapter.ViewHolder> {
+public class UserListRecyclerViewAdapter extends RecyclerView.Adapter<UserListRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MsgListRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public UserListRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

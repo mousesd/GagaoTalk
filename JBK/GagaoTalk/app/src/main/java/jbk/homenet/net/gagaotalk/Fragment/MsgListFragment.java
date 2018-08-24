@@ -10,11 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import jbk.homenet.net.gagaotalk.Adapter.MsgListRecyclerViewAdapter;
 import jbk.homenet.net.gagaotalk.R;
 import jbk.homenet.net.gagaotalk.Fragment.dummy.DummyContent;
 import jbk.homenet.net.gagaotalk.Fragment.dummy.DummyContent.DummyItem;
-
-import java.util.List;
 
 /**
  * A fragment representing a list of Items.
