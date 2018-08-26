@@ -18,26 +18,38 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
+import sjs.homenet.net.gagaotalk.UserInfo;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 
 
 public class SginUpActivity extends AppCompatActivity {
 
     private static final String TAG = "EmailPassword";
-    private EditText mEmailField;
-    private EditText mPasswordField;
-
+    private EditText _emailField;
+    private EditText _passwordField;
+    private EditText _nameField;
+    private EditText _phoneNumber;
+    private String _fareKey;
 
     private FirebaseAuth mAuth;
+    public  static FirebaseUser _firebaseUser;
+    public static DatabaseReference Database;
+    public  static  UserInfo  UserInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sgin_up);
 
-        mEmailField = findViewById(R.id.field_email);
-        mPasswordField = findViewById(R.id.field_password);
+        _emailField = findViewById(R.id.field_email);
+        _passwordField = findViewById(R.id.field_password);
+        _nameField = findViewById(R.id.field_name);
+        _phoneNumber = findViewById(R.id.field_phone_number);
 
         Button buttonCreateId = (Button)findViewById(R.id.email_create_account_button);
+        //this._fareKey = FirebaseUser.getUid();
 
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
@@ -45,8 +57,8 @@ public class SginUpActivity extends AppCompatActivity {
         buttonCreateId.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mEmailField.getText().toString() != null && mPasswordField.getText().toString() != null){
-                    createAccount(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                if(_emailField.getText().toString() != null && _passwordField.getText().toString() != null){
+                    createAccount(_emailField.getText().toString(), _passwordField.getText().toString());
                 }
             }
         });
@@ -59,7 +71,11 @@ public class SginUpActivity extends AppCompatActivity {
             return;
         }
 
-        //showProgressDialog();
+//        // 유효성 검사
+//        if(_nameField.getText().toString() == ""){
+//            Toast.makeText(SginUpActivity.this, "이름은 필수값 입니다.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
 
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -69,9 +85,8 @@ public class SginUpActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            Intent intent = new Intent(SginUpActivity.this, MainListActivity.class);
-                            SginUpActivity.this.startActivity(intent);
+                            _firebaseUser = mAuth.getCurrentUser();
+                            SaveUserInfo();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
@@ -96,23 +111,46 @@ public class SginUpActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
+        String email = _emailField.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
+            _emailField.setError("이메일을 입력해주세요");
             valid = false;
         } else {
-            mEmailField.setError(null);
+            _emailField.setError(null);
         }
 
-        String password = mPasswordField.getText().toString();
+        String password = _passwordField.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
+            _passwordField.setError("비밀번호를 입력해주세요");
             valid = false;
         } else {
-            mPasswordField.setError(null);
+            _passwordField.setError(null);
+        }
+
+        String name = _nameField.getText().toString();
+        if(TextUtils.isEmpty(name)){
+            _nameField.setError("이름을 입력해주세요");
+            valid = false;
+        }
+        else{
+            _nameField.setError(null);
         }
 
         return valid;
+    }
+
+    private void SaveUserInfo(){
+
+        Database = FirebaseDatabase.getInstance().getReference();
+
+        UserInfo = new UserInfo(_firebaseUser.getUid(),this._nameField.getText().toString(), this._emailField.getText().toString()
+                              , this._phoneNumber.getText().toString());
+
+        Database.child("user").child(_firebaseUser.getUid()).setValue(UserInfo);
+        //Database.child("user").push().setValue(UserInfo);
+        Intent intent = new Intent(SginUpActivity.this, MainListActivity.class);
+        SginUpActivity.this.startActivity(intent);
+        finish();
     }
 
 
