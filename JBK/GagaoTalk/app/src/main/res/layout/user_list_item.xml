@@ -1,29 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/imgUser"
-        android:layout_width="60dp"
-        android:layout_height="60dp" />
-
-    <TextView
-        android:id="@+id/txtUserNm"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:text="가가오톡"/>
-
-    <TextView
-        android:id="@+id/txtStateMsg"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="상태메세지......"/>
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/imgUser"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
+        <TextView
+            android:id="@+id/txtUserNm"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:text="가가오톡"/>
+
+        <TextView
+            android:id="@+id/txtStateMsg"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:text="상태메세지......"/>
+    </LinearLayout>
+    <View  android:id="@+id/line" style="@style/Line"/>
 
 </LinearLayout>

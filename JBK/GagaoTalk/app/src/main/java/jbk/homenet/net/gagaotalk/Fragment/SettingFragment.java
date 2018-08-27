@@ -14,6 +14,7 @@ import android.widget.Button;
 import com.google.firebase.auth.FirebaseAuth;
 
 import jbk.homenet.net.gagaotalk.Activity.MainActivity;
+import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.R;
 
@@ -85,7 +86,11 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 FirbaseService.FirebaseAuth.signOut();
                 FirebaseAuth.getInstance().signOut();
+
                 FirbaseService.FirebaseUser = null;
+                FirbaseService.FirebaseAuth = null;
+                CommonService.UserInfo = null;
+
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 startActivity(intent);
                 if (getActivity() != null)
