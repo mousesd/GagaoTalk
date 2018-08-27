@@ -329,7 +329,7 @@ public class AuthActivity  extends BaseActivity implements
 
                         Intent intent = new Intent(AuthActivity.this, UserActivity.class);
 
-                        intent.putExtra("uid", uid);
+//                        intent.putExtra("uid", uid);
 //                        intent.putExtra("email", email);
 
                         startActivity(intent);

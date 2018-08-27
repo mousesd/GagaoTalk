@@ -10,6 +10,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+
 
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
@@ -45,6 +47,7 @@ public class MainActivity  extends BaseActivity
             myActionBar.hide();
 
         FirbaseService.FirebaseAuth = FirebaseAuth.getInstance();
+        FirbaseService.FirebaseStorage = FirebaseStorage.getInstance();
     }
 
     //endregion  -- onCreate() : onCreate --
