@@ -104,7 +104,8 @@
             <EditText
                 android:id="@+id/field_phone_number"
                 android:layout_width="281sp"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:inputType="phone"/>
 
         </LinearLayout>
 

@@ -23,6 +23,9 @@ import sjs.homenet.net.gagaotalk.UserInfo;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class SginUpActivity extends AppCompatActivity {
 
@@ -49,7 +52,6 @@ public class SginUpActivity extends AppCompatActivity {
         _phoneNumber = findViewById(R.id.field_phone_number);
 
         Button buttonCreateId = (Button)findViewById(R.id.email_create_account_button);
-        //this._fareKey = FirebaseUser.getUid();
 
         // [START initialize_auth]
         mAuth = FirebaseAuth.getInstance();
@@ -70,12 +72,6 @@ public class SginUpActivity extends AppCompatActivity {
         if (!validateForm()) {
             return;
         }
-
-//        // 유효성 검사
-//        if(_nameField.getText().toString() == ""){
-//            Toast.makeText(SginUpActivity.this, "이름은 필수값 입니다.", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
 
         // [START create_user_with_email]
         mAuth.createUserWithEmailAndPassword(email, password)
@@ -115,7 +111,12 @@ public class SginUpActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(email)) {
             _emailField.setError("이메일을 입력해주세요");
             valid = false;
-        } else {
+        }
+        else if(!CheckEmail(_emailField.getText().toString())){
+            Toast.makeText(SginUpActivity.this, "이메일형식으로 입력하세요", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
+        else {
             _emailField.setError(null);
         }
 
@@ -123,7 +124,12 @@ public class SginUpActivity extends AppCompatActivity {
         if (TextUtils.isEmpty(password)) {
             _passwordField.setError("비밀번호를 입력해주세요");
             valid = false;
-        } else {
+        }
+        else if(password.length() < 6){
+            Toast.makeText(SginUpActivity.this, "비밀번호는 6자리 이상이여야 합니다.", Toast.LENGTH_SHORT).show();
+            valid = false;
+        }
+        else {
             _passwordField.setError(null);
         }
 
@@ -137,6 +143,17 @@ public class SginUpActivity extends AppCompatActivity {
         }
 
         return valid;
+    }
+
+    private boolean CheckEmail(String email){
+        String regex = "^[_a-zA-Z0-9-\\.]+@[\\.a-zA-Z0-9-]+\\.[a-zA-Z]+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(email);
+
+        if ( !m.matches()){
+            return false;
+        }
+        return true;
     }
 
     private void SaveUserInfo(){
