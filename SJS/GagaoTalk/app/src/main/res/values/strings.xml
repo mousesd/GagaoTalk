@@ -55,10 +55,10 @@
     <string name="status_verification_succeeded">Verification succeeded</string>
     <string name="status_sign_in_failed">Sign-in failed</string>
     <string name="instant_validation">(instant validation)</string>
-    <string name="userName">Name</string>
+    <string name="userName">Name:</string>
 
-    <string name="Email">Email</string>
-    <string name="Password">Password</string>
+    <string name="Email">Email:</string>
+    <string name="Password">Password:</string>
     <string name="SignUp">가입하기</string>
 
     <string name="firebase_status_fmt">Firebase User: %s</string>
@@ -79,7 +79,7 @@
     <string name="status_email_sent">Link sent, check your email to continue.</string>
     <string name="status_link_found">Link received, enter email to sign in.</string>
 
-    <string name="phone_title_text">Phone Number</string>
+    <string name="phone_title_text">Phone Number:</string>
 
     <string name="twitter_status_fmt">Twitter User: %s</string>
     <string name="twitter_title_text">Twitter Login</string>

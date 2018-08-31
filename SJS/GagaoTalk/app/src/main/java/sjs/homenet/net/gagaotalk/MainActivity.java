@@ -24,16 +24,18 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class MainActivity extends AppCompatActivity {
 
 
-    private EditText mEmailField;
-    private EditText mPasswordField;
+    private EditText _emailField;
+    private EditText _passwordField;
 
     private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
     private static final String TAG = "EmailPassword";
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
@@ -43,8 +45,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mEmailField = findViewById(R.id.editEamil);
-        mPasswordField = findViewById(R.id.editPassword);
+        _emailField = findViewById(R.id.editEamil);
+        _passwordField = findViewById(R.id.editPassword);
 
         Button buttonCreateAccount = (Button)findViewById(R.id.email_create_account_button);
         Button buttonSignIn = (Button)findViewById(R.id.email_sign_in_button);
@@ -61,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         buttonSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(mEmailField.getText().toString(), mPasswordField.getText().toString());
+                signIn(_emailField.getText().toString(), _passwordField.getText().toString());
             }
         });
 
@@ -87,6 +89,33 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         // [END initialize_auth]
 
+        mAuthListener = new FirebaseAuth.AuthStateListener(){
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
     }
 
     private void signIn(String email, String password) {
@@ -111,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithEmail:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "회원정보가 없거나 비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                         }
 
                         // [START_EXCLUDE]
@@ -127,20 +157,20 @@ public class MainActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean valid = true;
 
-        String email = mEmailField.getText().toString();
+        String email = _emailField.getText().toString();
         if (TextUtils.isEmpty(email)) {
-            mEmailField.setError("Required.");
+            _emailField.setError("이메일을 입력해주세요");
             valid = false;
         } else {
-            mEmailField.setError(null);
+            _emailField.setError(null);
         }
 
-        String password = mPasswordField.getText().toString();
+        String password = _passwordField.getText().toString();
         if (TextUtils.isEmpty(password)) {
-            mPasswordField.setError("Required.");
+            _passwordField.setError("비밀번호를 입력해주세요");
             valid = false;
         } else {
-            mPasswordField.setError(null);
+            _passwordField.setError(null);
         }
 
         return valid;
