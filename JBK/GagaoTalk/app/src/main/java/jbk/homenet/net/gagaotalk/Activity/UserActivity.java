@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -78,6 +80,11 @@ public class UserActivity extends BaseActivity implements
     private String stateMsg;
 
     /**
+     * 이미지 등록 여부
+     */
+    private Boolean hasImage;
+
+    /**
      * 이름 EditText
      */
     private EditText txtName;
@@ -96,6 +103,8 @@ public class UserActivity extends BaseActivity implements
      * 프로필사진 ImageView
      */
     private ImageView imgProfile;
+
+    private Uri selectUri;
 
     //endregion == [ Fields ] ==
 
@@ -126,16 +135,25 @@ public class UserActivity extends BaseActivity implements
                 this.name = CommonService.UserInfo.name;
                 this.phoneNum = CommonService.UserInfo.phoneNum;
                 this.stateMsg = CommonService.UserInfo.stateMsg;
+                this.hasImage = CommonService.UserInfo.hasImage;
+
             } else{
                 //# 신규입력
                 this.uid = FirbaseService.FirebaseAuth.getUid();
             }
+
+            findViewById(R.id.imgProfile).setOnClickListener(this);
 
         } else{
 
             //# 다른 사용자 정보 조회
             Button btnSave = findViewById(R.id.btnUserCommit);
             btnSave.setVisibility(View.GONE);
+
+            Button btnChat= findViewById(R.id.btnChating);
+            Button btnCall = findViewById(R.id.btnCall);
+            btnChat.setVisibility(View.VISIBLE);
+            btnCall.setVisibility(View.VISIBLE);
 
             this.uid = extraUid;
             CommonService.Database = FirebaseDatabase.getInstance().getReference("users").child(extraUid);
@@ -149,6 +167,7 @@ public class UserActivity extends BaseActivity implements
                         name = tempUserInfo.name;
                         phoneNum = tempUserInfo.phoneNum;
                         stateMsg = tempUserInfo.stateMsg;
+                        hasImage = tempUserInfo.hasImage;
 
                         txtName = findViewById(R.id.name);
                         txtPhoneNum = findViewById(R.id.phoneNum);
@@ -157,6 +176,24 @@ public class UserActivity extends BaseActivity implements
                         txtName.setText(name);
                         txtPhoneNum.setText(phoneNum);
                         txtStateMsg.setText(stateMsg);
+
+                        if (hasImage != null && hasImage) {
+
+                            // Reference to an image file in Firebase Storage
+                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+                            StorageReference riversRef = riversProfileRef.child("profileImage/" + uid);
+
+                            if (riversRef.getName().equals(uid)) {
+
+                                // Load the image using Glide
+                                Glide.with(UserActivity.this)
+                                        .using(new FirebaseImageLoader())
+                                        .load(riversRef)
+                                        .into(imgProfile);
+                            }
+                        }
+
                     }
                 }
 
@@ -182,8 +219,25 @@ public class UserActivity extends BaseActivity implements
         this.txtPhoneNum.setText(this.phoneNum);
         this.txtStateMsg.setText(this.stateMsg);
 
+        if (hasImage != null && hasImage) {
+
+            // Reference to an image file in Firebase Storage
+            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+            StorageReference riversRef = riversProfileRef.child("profileImage/" + uid);
+
+            if (riversRef.getName().equals(uid)) {
+
+                // Load the image using Glide
+                Glide.with(this)
+                        .using(new FirebaseImageLoader())
+                        .load(riversRef)
+                        .into(imgProfile);
+            }
+        }
+
+        //# Click Listener 등록
         findViewById(R.id.btnUserCommit).setOnClickListener(this);
-        findViewById(R.id.imgProfile).setOnClickListener(this);
     }
 
     //endregion
@@ -214,6 +268,7 @@ public class UserActivity extends BaseActivity implements
 
                 case GALLERY_CODE:
                     SetPicture(data.getData()); //갤러리에서 가져오기
+                    selectUri = data.getData();
                     break;
 
                 default:
@@ -278,8 +333,10 @@ public class UserActivity extends BaseActivity implements
             StorageReference riversProfileRef = riversRootRef.child("profileImage");
             StorageReference riversRef = riversProfileRef.child("profileImage/" + this.uid );
 
+            riversRef.delete();
+
             Uri file = Uri.fromFile(new File(this.imgProfile.getTag().toString()));
-            UploadTask uploadTask =  riversRef.putFile(file);
+            UploadTask uploadTask =  riversRef.putFile(selectUri);
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -290,16 +347,19 @@ public class UserActivity extends BaseActivity implements
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     //# 사용자 정보 저장
+                    CommonService.UserInfo.hasImage = true;
+
+                    CommonService.Database = FirebaseDatabase.getInstance().getReference();
                     CommonService.Database.child("users").child(uid).setValue(CommonService.UserInfo);
                 }
             });
         } else {
             //# 사용자 정보 저장
+            CommonService.UserInfo.hasImage = false;
+
+            CommonService.Database = FirebaseDatabase.getInstance().getReference();
             CommonService.Database.child("users").child(this.uid).setValue(CommonService.UserInfo);
         }
-
-
-
 
         Intent intent = new Intent(UserActivity.this, MainFrameActivity.class);
         startActivity(intent);
@@ -316,8 +376,6 @@ public class UserActivity extends BaseActivity implements
         ActivityCompat.requestPermissions(this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 REQUEST_PERMISSION_CODE);
-
-
     }
     //endregion -- SetGallery() : 프로필사진 설정 --
 
