@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
@@ -33,7 +34,11 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import jbk.homenet.net.gagaotalk.Class.ChatingRoom;
+import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.Class.UserInfo;
@@ -104,6 +109,9 @@ public class UserActivity extends BaseActivity implements
      */
     private ImageView imgProfile;
 
+    /**
+     * 이미지경로
+     */
     private Uri selectUri;
 
     //endregion == [ Fields ] ==
@@ -238,6 +246,7 @@ public class UserActivity extends BaseActivity implements
 
         //# Click Listener 등록
         findViewById(R.id.btnUserCommit).setOnClickListener(this);
+        findViewById(R.id.btnChating).setOnClickListener(this);
     }
 
     //endregion
@@ -254,10 +263,19 @@ public class UserActivity extends BaseActivity implements
             this.SaveUserInfo();
         } else if (i == R.id.imgProfile){
             this.GetGallery ();
+        } else if (i== R.id.btnChating){
+            this.SetChatingRoom();
         }
     }
     //endregion -- onClick() : onClick --
 
+    //region -- onActivityResult() : onActivityResultk --
+    /**
+     * onActivityResultk
+     * @param requestCode 요청코드
+     * @param resultCode 결과코드
+     * @param data 데이터
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -277,8 +295,15 @@ public class UserActivity extends BaseActivity implements
 
         }
     }
+    //endregion -- onActivityResult() : onActivityResult --
 
-
+    //region -- onRequestPermissionsResult() : onRequestPermissionsResult --
+    /**
+     * onRequestPermissionsResult
+     * @param requestCode 요청코드
+     * @param permissions 권한정보
+     * @param grantResults 권한결과
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -301,7 +326,7 @@ public class UserActivity extends BaseActivity implements
                 break;
         }
     }
-
+    //endregion -- onRequestPermissionsResult() : onRequestPermissionsResult --
 
     //endregion == [ Override Methods ] ==
 
@@ -335,7 +360,6 @@ public class UserActivity extends BaseActivity implements
 
             riversRef.delete();
 
-            Uri file = Uri.fromFile(new File(this.imgProfile.getTag().toString()));
             UploadTask uploadTask =  riversRef.putFile(selectUri);
 
             uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -380,6 +404,11 @@ public class UserActivity extends BaseActivity implements
     //endregion -- SetGallery() : 프로필사진 설정 --
 
 
+    //region -- SetPicture() : 이미지 설정 --
+    /**
+     * 이미지 설정
+     * @param imgUri 이미지 경로
+     */
     private void SetPicture(Uri imgUri) {
 
 //            String imagePath = getRealPathFromURI(imgUri); // path 경로
@@ -397,7 +426,55 @@ public class UserActivity extends BaseActivity implements
             imgProfile.setImageURI(imgUri);
             imgProfile.setTag(imgUri);
             //setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
+    }
+    //endregion -- SetPicture() : 이미지 설정 --
 
+    private void SetChatingRoom(){
+
+        CommonService.Database = FirebaseDatabase.getInstance().getReference();
+
+
+        CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(this.uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ChatingRoomInfo chatingRoomInfo = dataSnapshot.getValue(ChatingRoomInfo.class);
+
+                if (chatingRoomInfo != null){
+                    String chatingRoomId =chatingRoomInfo.ChatingRoomId;
+
+                    Intent intent = new Intent(UserActivity.this, MessageActivity.class);
+                    intent.putExtra("ChatingRoomId", chatingRoomId);
+
+                    startActivity(intent);
+                    finish();
+
+                } else{
+                    chatingRoomInfo = new ChatingRoomInfo();
+                    DatabaseReference chatingRoomUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
+                    chatingRoomInfo.ChatingRoomId = chatingRoomUid.getKey();
+                    chatingRoomInfo.TargetUser = uid;
+
+                    //# 내 채팅 목록추가
+                    CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(uid).setValue(chatingRoomInfo);
+
+                    //# 상대 채팅 목록 추가
+                    chatingRoomInfo.TargetUser = CommonService.UserInfo.uid;
+                    CommonService.Database.child("chatingRoom").child(uid).child(CommonService.UserInfo.uid).setValue(chatingRoomInfo);
+
+                    Intent intent = new Intent(UserActivity.this, MessageActivity.class);
+                    intent.putExtra("ChatingRoomId", chatingRoomInfo.ChatingRoomId );
+
+                    startActivity(intent);
+                    finish();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private String getRealPathFromURI(Uri contentUri) {
