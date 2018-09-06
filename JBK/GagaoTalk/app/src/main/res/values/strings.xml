@@ -50,4 +50,10 @@
     <string name="chating">1:1채팅</string>
     <string name="call">전화걸기</string>
     <string name="send">전송</string>
+    <string name="MyProfile">내프로필</string>
+    <string name="profileimage">ProfileImage</string>
+    <string name="UserList">친구목록</string>
+    <string name="stateMsgText">상태메세지......</string>
+    <string name="KorGagaoTalk">가가오톡</string>
+    <string name="LastMessage">마지막 메세지.....</string>
 </resources>

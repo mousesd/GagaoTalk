@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="내프로필"/>
+            android:text="@string/MyProfile"/>
         <View  style="@style/Line"/>
 
         <LinearLayout
@@ -24,7 +24,8 @@
                 android:id="@+id/imgMyUser"
                 android:layout_margin="10dp"
                 android:layout_width="60dp"
-                android:layout_height="60dp" />
+                android:layout_height="60dp"
+                android:contentDescription="@string/profileimage" />
 
             <TextView
                 android:id="@+id/txtMyUserNm"
@@ -33,7 +34,7 @@
                 android:gravity="center"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:text="가가오톡"/>
+                android:text="@string/KorGagaoTalk"/>
 
             <TextView
                 android:id="@+id/txtMyStateMsg"
@@ -41,7 +42,7 @@
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:textSize="20sp"
-                android:text="상태메세지......"/>
+                android:text="@string/stateMsgText"/>
         </LinearLayout>
 
         <View  style="@style/Line"/>
@@ -49,7 +50,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="친구목록"/>
+            android:text="@string/UserList"/>
 
         <View  style="@style/Line"/>
 
@@ -61,7 +62,7 @@
         android:name="jbk.homenet.net.gagaotalk.Fragment.UserListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".Fragment.MsgListFragment"
-        tools:listitem="@layout/fragment_msglist" />
+        tools:context=".Fragment.UserListFragment"
+        tools:listitem="@layout/user_list_item" />
 
 </LinearLayout>

@@ -433,7 +433,6 @@ public class UserActivity extends BaseActivity implements
 
         CommonService.Database = FirebaseDatabase.getInstance().getReference();
 
-
         CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(this.uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

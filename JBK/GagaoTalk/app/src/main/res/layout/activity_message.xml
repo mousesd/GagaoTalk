@@ -5,15 +5,13 @@
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
-
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/listMessage"
+        android:id="@+id/listChating"
+        android:name="jbk.homenet.net.gagaotalk.Fragment.MsgListFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        tools:context=".Fragment.MsgListFragment"
-        tools:listitem="@layout/fragment_msglist" />
+        android:layout_height="match_parent"
+        tools:listitem="@layout/chat_list_item" />
 
     <LinearLayout
         android:layout_width="match_parent"

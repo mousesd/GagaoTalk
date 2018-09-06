@@ -13,7 +13,8 @@
             android:id="@+id/imgUser"
             android:layout_margin="10dp"
             android:layout_width="60dp"
-            android:layout_height="60dp" />
+            android:layout_height="60dp"
+            android:contentDescription="@string/profileimage" />
 
         <TextView
             android:id="@+id/txtUserNm"
@@ -22,7 +23,7 @@
             android:gravity="center"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:text="가가오톡"/>
+            android:text="@string/KorGagaoTalk"/>
 
         <TextView
             android:id="@+id/txtStateMsg"
@@ -30,7 +31,7 @@
             android:layout_height="60dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:text="상태메세지......"/>
+            android:text="@string/stateMsgText"/>
     </LinearLayout>
     <View  android:id="@+id/line" style="@style/Line"/>
 

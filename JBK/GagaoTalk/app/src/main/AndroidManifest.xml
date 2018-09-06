@@ -46,7 +46,7 @@
         <activity
             android:name=".SettingActivity"
             android:label="환경설정" />
-        <activity android:name=".Activity.MassageActivity"
+        <activity android:name=".Activity.MessageActivity"
             android:label="대화하기"/>
     </application>
 
