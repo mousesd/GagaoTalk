@@ -32,6 +32,11 @@ public class UserInfo {
      */
     public String phoneNum;
 
+    /**
+     * 이미지 입력 여부
+     */
+    public Boolean hasImage;
+
     //endregion == [ Fields ] ==
 
     //region == [ Constructors ] ==

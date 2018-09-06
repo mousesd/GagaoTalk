@@ -13,14 +13,18 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
+import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageReference;
 
 
 import jbk.homenet.net.gagaotalk.Activity.UserActivity;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
+import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.Class.UserInfo;
 import jbk.homenet.net.gagaotalk.R;
 
@@ -69,6 +73,19 @@ public class UserListFragment extends Fragment {
         MyUserNm.setText(CommonService.UserInfo.name);
         MyStateMsg.setText(CommonService.UserInfo.stateMsg);
 
+        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+        StorageReference riversProfileRef = riversRootRef.child("profileImage");
+        StorageReference riversRef = riversProfileRef.child("profileImage/" + CommonService.UserInfo.uid );
+
+        if (riversRef.getName().equals(CommonService.UserInfo.uid)){
+
+            // Load the image using Glide
+            Glide.with(getActivity())
+                    .using(new FirebaseImageLoader())
+                    .load(riversRef)
+                    .into(MyImgUser);
+        }
+
         View MmLayout = view.findViewById(R.id.MyLayout);
 
         MmLayout.setOnClickListener(new View.OnClickListener() {
@@ -104,6 +121,23 @@ public class UserListFragment extends Fragment {
                 } else {
                     holder.txtUserNm.setText(model.name);
                     holder.txtStateMsg.setText(model.stateMsg);
+
+                    if (model.hasImage != null && model.hasImage) {
+                        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+                        StorageReference riversProfileRef = riversRootRef.child("profileImage");
+                        StorageReference riversRef = riversProfileRef.child("profileImage/" + model.uid);
+
+                        if (riversRef.getName().equals(model.uid)) {
+
+                            // Load the image using Glide
+                            Glide.with(getActivity())
+                                    .using(new FirebaseImageLoader())
+                                    .load(riversRef)
+                                    .into(holder.imgUser);
+                        }
+                    } else {
+                        holder.imgUser.setImageResource(android.R.color.transparent);
+                    }
 
                     holder.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override

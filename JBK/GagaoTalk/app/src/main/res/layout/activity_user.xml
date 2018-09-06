@@ -16,39 +16,70 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:contentDescription="TODO" />
+        android:contentDescription="@string/Desc_ProfilePicture" />
 
     <EditText
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="이름"
+        android:hint="@string/name"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/stateMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint= "상태메세지"
+        android:hint= "@string/stateMsg"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:inputType="text" />
 
     <EditText
         android:id="@+id/phoneNum"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint= "연락처"
-
+        android:hint= "@string/phone"
         android:maxLines="1"
-        android:singleLine="true" />
+        android:singleLine="true"
+        android:inputType="phone" />
 
-    <Button
-        android:id="@+id/btnUserCommit"
-        style="?android:textAppearanceSmall"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="저장"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/btnUserCommit"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="@string/save"
+            android:textStyle="bold" />
+        <Button
+            android:id="@+id/btnChating"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="@string/chating"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+        <Button
+            android:id="@+id/btnCall"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_weight="1"
+            android:text="@string/call"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+
 </LinearLayout>

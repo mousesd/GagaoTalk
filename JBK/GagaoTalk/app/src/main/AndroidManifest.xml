@@ -9,8 +9,8 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="false"
@@ -21,7 +21,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Activity.BaseActivity" />
-        <activity android:name=".Activity.MainActivity" >
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,9 +37,17 @@
         <activity
             android:name=".Activity.MainFrameActivity"
             android:label="Gagao Talk" />
-        <activity android:name=".UserListActivity" android:label="친구목록" />
-        <activity android:name=".MsgListActivity" android:label="대화목록" />
-        <activity android:name=".SettingActivity" android:label="환경설정" />
+        <activity
+            android:name=".UserListActivity"
+            android:label="친구목록" />
+        <activity
+            android:name=".MsgListActivity"
+            android:label="대화목록" />
+        <activity
+            android:name=".SettingActivity"
+            android:label="환경설정" />
+        <activity android:name=".Activity.MessageActivity"
+            android:label="대화하기"/>
     </application>
 
 </manifest>

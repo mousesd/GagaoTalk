@@ -42,4 +42,18 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="gagao_talk">Gagao Talk</string>
+    <string name="Desc_ProfilePicture">프로필 사진</string>
+    <string name="name">이름</string>
+    <string name="stateMsg">상태메세지</string>
+    <string name="phone">연락처</string>
+    <string name="save">저장</string>
+    <string name="chating">1:1채팅</string>
+    <string name="call">전화걸기</string>
+    <string name="send">전송</string>
+    <string name="MyProfile">내프로필</string>
+    <string name="profileimage">ProfileImage</string>
+    <string name="UserList">친구목록</string>
+    <string name="stateMsgText">상태메세지......</string>
+    <string name="KorGagaoTalk">가가오톡</string>
+    <string name="LastMessage">마지막 메세지.....</string>
 </resources>
