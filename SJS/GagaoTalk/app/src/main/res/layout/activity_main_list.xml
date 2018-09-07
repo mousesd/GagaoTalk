@@ -1,17 +1,82 @@
-<?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainListActivity">
+    android:background="@color/grey_500"
+    android:orientation="vertical"
+    android:weightSum="4">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button"
-        tools:layout_editor_absoluteX="132dp"
-        tools:layout_editor_absoluteY="58dp"
-        tools:ignore="MissingConstraints" />
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/grey_500"
+        android:gravity="center_vertical">
+
+        <TabHost
+            android:id="@+id/tabHost1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <!-- TabWidget의 id값이 반드시 "tabs"로 지정되어야 함. -->
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+                <!-- FrameLayout의 id값이 반드시 "tabcontent"로 지정되어야 함. -->
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <!-- 첫 번째 페이지. content1 -->
+                    <LinearLayout android:id="@+id/content1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#8BC34A"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="TAB CONTENT 1" />
+                    </LinearLayout>
+                    <!-- 두 번째 페이지. content2 -->
+                    <LinearLayout
+                        android:id="@+id/content2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#009688"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="TAB CONTENT 2" />
+                    </LinearLayout>
+                    <!-- 세 번째 페이지. content3 -->
+                    <LinearLayout
+                        android:id="@+id/content3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="#2196F3"
+                            android:gravity="center"
+                            android:padding="8dp"
+                            android:text="TAB CONTENT 3" />
+                    </LinearLayout>
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+    </RelativeLayout>
+</LinearLayout>
