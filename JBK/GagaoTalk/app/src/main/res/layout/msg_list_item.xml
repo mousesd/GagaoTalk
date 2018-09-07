@@ -2,39 +2,62 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/imgTargetUser"
-        android:layout_margin="10dp"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@string/profileimage" />
+    android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/txtTargetUserNm"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:padding="0dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/KorGagaoTalk"/>
+        <ImageView
+            android:id="@+id/imgTargetUser"
+            android:layout_margin="10dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/profileimage" />
 
-        <TextView
-            android:id="@+id/txtLastMsg"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:padding="0dp"
-            android:textSize="15sp"
-            android:text="@string/LastMessage"/>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <View  android:id="@+id/line" style="@style/Line"/>
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtTargetUserNm"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:padding="0dp"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:text="@string/KorGagaoTalk"/>
+
+                <TextView
+                    android:id="@+id/txtMsgLastTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="10dp"
+                    android:textSize="10sp"
+                    android:text="12:00"/>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtLastMsg"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:padding="0dp"
+                android:textSize="15sp"
+                android:text="@string/LastMessage"/>
+
+
+        </LinearLayout>
+
     </LinearLayout>
 
+    <View  android:id="@+id/line" style="@style/Line"/>
 
 </LinearLayout>

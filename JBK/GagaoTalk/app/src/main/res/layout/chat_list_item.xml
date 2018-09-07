@@ -1,40 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <ImageView
-        android:id="@+id/imgTargetUser"
-        android:layout_margin="10dp"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:contentDescription="@string/profileimage" />
+    android:orientation="vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/postLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/txtChatUserNm"
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:padding="0dp"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:text="@string/KorGagaoTalk"/>
+        <ImageView
+            android:id="@+id/imgChatUser"
+            android:layout_margin="10dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:contentDescription="@string/profileimage" />
 
-        <TextView
-            android:id="@+id/txtChatMsg"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/txtChatUserNm"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:padding="0dp"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:text="@string/KorGagaoTalk"/>
+
+            <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/txtChatMsg"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    android:layout_weight="1"
+                    android:textSize="15sp"
+                    android:text="@string/LastMessage"/>
+
+                <TextView
+                    android:id="@+id/txtChatLastTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="0dp"
+                    android:layout_marginStart="20dp"
+                    android:textSize="9sp"
+                    android:text="12:00"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/sendLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/txtMyChatLastTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:layout_marginEnd="20dp"
+            android:textSize="9sp"
+            android:text="12:00"/>
+
+        <TextView
+            android:id="@+id/txtMyChatMsg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:padding="0dp"
             android:textSize="15sp"
             android:text="@string/LastMessage"/>
 
-        <View  android:id="@+id/line" style="@style/Line"/>
-    </LinearLayout>
 
+    </LinearLayout>
 
 </LinearLayout>

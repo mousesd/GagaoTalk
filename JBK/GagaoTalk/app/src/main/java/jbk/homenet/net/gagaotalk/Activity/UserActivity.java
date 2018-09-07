@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -32,12 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
-import jbk.homenet.net.gagaotalk.Class.ChatingRoom;
 import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
@@ -433,39 +429,48 @@ public class UserActivity extends BaseActivity implements
 
         CommonService.Database = FirebaseDatabase.getInstance().getReference();
 
-        CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(this.uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ChatingRoomInfo chatingRoomInfo = dataSnapshot.getValue(ChatingRoomInfo.class);
 
-                if (chatingRoomInfo != null){
-                    String chatingRoomId =chatingRoomInfo.ChatingRoomId;
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
 
-                    Intent intent = new Intent(UserActivity.this, MessageActivity.class);
-                    intent.putExtra("ChatingRoomId", chatingRoomId);
+                while (child.hasNext()) {
+                    ChatingRoomInfo chatingRoomInfo = child.next().getValue(ChatingRoomInfo.class);
 
-                    startActivity(intent);
-                    finish();
+                    if (chatingRoomInfo != null) {
+                        if (chatingRoomInfo.TargetUser.equals(uid)) {
+                            String chatingRoomId = chatingRoomInfo.ChatingRoomId;
 
-                } else{
-                    chatingRoomInfo = new ChatingRoomInfo();
-                    DatabaseReference chatingRoomUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
-                    chatingRoomInfo.ChatingRoomId = chatingRoomUid.getKey();
-                    chatingRoomInfo.TargetUser = uid;
+                            Intent intent = new Intent(UserActivity.this, MessageActivity.class);
+                            intent.putExtra("chatingRoomId", chatingRoomId);
 
-                    //# 내 채팅 목록추가
-                    CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(uid).setValue(chatingRoomInfo);
-
-                    //# 상대 채팅 목록 추가
-                    chatingRoomInfo.TargetUser = CommonService.UserInfo.uid;
-                    CommonService.Database.child("chatingRoom").child(uid).child(CommonService.UserInfo.uid).setValue(chatingRoomInfo);
-
-                    Intent intent = new Intent(UserActivity.this, MessageActivity.class);
-                    intent.putExtra("ChatingRoomId", chatingRoomInfo.ChatingRoomId );
-
-                    startActivity(intent);
-                    finish();
+                            startActivity(intent);
+                            finish();
+                            return;
+                        }
+                    }
                 }
+
+
+                ChatingRoomInfo chatingRoomInfo = new ChatingRoomInfo();
+                DatabaseReference chatingRoomUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
+                chatingRoomInfo.ChatingRoomId = chatingRoomUid.getKey();
+                chatingRoomInfo.TargetUser = uid;
+
+                //# 내 채팅 목록추가
+                CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
+
+                //# 상대 채팅 목록 추가
+                chatingRoomInfo.TargetUser = CommonService.UserInfo.uid;
+                CommonService.Database.child("chatingRoom").child(uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
+
+                Intent intent = new Intent(UserActivity.this, MessageActivity.class);
+                intent.putExtra("chatingRoomId", chatingRoomInfo.ChatingRoomId);
+
+                startActivity(intent);
+                finish();
+
 
             }
 

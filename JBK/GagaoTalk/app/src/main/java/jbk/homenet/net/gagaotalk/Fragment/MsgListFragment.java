@@ -1,6 +1,7 @@
 package jbk.homenet.net.gagaotalk.Fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -22,9 +23,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
+import java.text.SimpleDateFormat;
+import java.util.Iterator;
+import java.util.Locale;
+
+import jbk.homenet.net.gagaotalk.Activity.MessageActivity;
 import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
+import jbk.homenet.net.gagaotalk.Class.MessageData;
 import jbk.homenet.net.gagaotalk.Class.UserInfo;
 import jbk.homenet.net.gagaotalk.R;
 
@@ -39,15 +46,21 @@ public class MsgListFragment extends Fragment {
         ImageView imgUser;
         TextView txtUserNm;
         TextView txtLastMsg;
+        TextView txtLastTime;
+
+        String chatingRoomid;
 
         MsgListViewHolder(View v) {
             super(v);
             imgUser = itemView.findViewById(R.id.imgTargetUser);
             txtUserNm = itemView.findViewById(R.id.txtTargetUserNm);
             txtLastMsg= itemView.findViewById(R.id.txtLastMsg);
+            txtLastTime = itemView.findViewById(R.id.txtMsgLastTime);
         }
     }
     //endregion == [ ViewHolder Class ] ==
+
+    private final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("a h:mm", Locale.getDefault());
 
     //region == [ Override Methods ] ==
 
@@ -95,8 +108,10 @@ public class MsgListFragment extends Fragment {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                        //# 사용자 정보 설정
                         UserInfo tartgetUserInfo = dataSnapshot.getValue(UserInfo.class);
                         holder.txtUserNm.setText(tartgetUserInfo.name);
+                        holder.chatingRoomid = model.ChatingRoomId;
 
                         if (tartgetUserInfo.hasImage != null && tartgetUserInfo.hasImage) {
                             StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
@@ -110,9 +125,44 @@ public class MsgListFragment extends Fragment {
                                         .load(riversRef)
                                         .into(holder.imgUser);
                             }
+
+
+                            //# 마지막 메세지 정보 설정
+                            CommonService.Database = FirebaseDatabase.getInstance().getReference();
+                            CommonService.Database.child("messageData").child(model.ChatingRoomId).limitToLast(1).addValueEventListener(new ValueEventListener() {
+
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                    Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+
+                                    while (child.hasNext()) {
+                                        MessageData messageData = child.next().getValue(MessageData.class);
+
+                                        if (messageData != null) {
+                                            holder.txtLastMsg.setText(messageData.Message);
+                                            holder.txtLastTime.setText(mSimpleDateFormat.format(messageData.Time));
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
                         } else {
                             holder.imgUser.setImageResource(android.R.color.transparent);
                         }
+
+                        holder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent intent = new Intent(getActivity(), MessageActivity.class);
+                                intent.putExtra("chatingRoomId", model.ChatingRoomId);
+                                startActivity(intent);
+                            }
+                        });
                     }
 
                     @Override
@@ -127,7 +177,7 @@ public class MsgListFragment extends Fragment {
         mFirebaseAdapter.startListening();
 
         return view;
-}
+    }
 
     //endregion -- onCreate() : onCreate --
 
