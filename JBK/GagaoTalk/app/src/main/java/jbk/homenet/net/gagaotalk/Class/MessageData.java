@@ -13,5 +13,6 @@ public class MessageData {
     public String  SendUser;
     public String  Message;
     public Long Time;
+    public String  MessageId;
 
 }

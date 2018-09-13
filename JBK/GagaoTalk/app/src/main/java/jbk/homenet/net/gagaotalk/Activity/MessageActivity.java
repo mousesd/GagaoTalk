@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,9 +31,12 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
+import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.Class.MessageData;
@@ -57,9 +62,14 @@ public class MessageActivity extends BaseActivity implements
         TextView txtMyMsg;
         TextView txtMyTime;
 
+        TextView txtMyRead;
+        TextView txtRead;
+
 
         View sendLayout;
         View postLayout;
+
+        String messageId;
 
         MessageDataViewHolder(View v) {
             super(v);
@@ -73,6 +83,9 @@ public class MessageActivity extends BaseActivity implements
 
             sendLayout = itemView.findViewById(R.id.sendLayout);
             postLayout = itemView.findViewById(R.id.postLayout);
+
+            txtMyRead = itemView.findViewById(R.id.txtMyChatRead);
+            txtRead = itemView.findViewById(R.id.txtChatRead);
         }
     }
     //endregion == [ ViewHolder Class ] ==
@@ -99,6 +112,10 @@ public class MessageActivity extends BaseActivity implements
      */
     private final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("a h:mm", Locale.getDefault());
 
+    private FirebaseRecyclerAdapter<MessageData, MessageActivity.MessageDataViewHolder> mFirebaseAdapter;
+
+    private List<String> userList = new ArrayList<String>();
+
     //endregion == [ Fields ] ==
 
     //region == [ Override Methods ] ==
@@ -122,11 +139,63 @@ public class MessageActivity extends BaseActivity implements
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
+
+        DatabaseReference chatingRoomInfo = FirebaseDatabase.getInstance().getReference();
+        chatingRoomInfo.child("messageData").child(CommonService.UserInfo.uid).child(chatringRoomId);
+        chatingRoomInfo.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String data = Objects.requireNonNull(dataSnapshot.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId).child("TargetUser").getValue()).toString();
+
+                assert data != null;
+                userList.add(data);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
         CommonService.Database = FirebaseDatabase.getInstance().getReference("messageData").child(this.chatringRoomId);
+
+        CommonService.Database.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+                MessageData messageData = dataSnapshot.getValue(MessageData.class);
+
+                DatabaseReference lastReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
+
+                //# 마지막 읽은 메세지 iD 저장
+                lastReadMessageDataBase.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId).child("LastReadMessageId").setValue(messageData.MessageId);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
 
         FirebaseRecyclerOptions<MessageData> options = new FirebaseRecyclerOptions.Builder<MessageData>().setQuery(CommonService.Database, MessageData.class).build();
 
-        final FirebaseRecyclerAdapter<MessageData, MessageActivity.MessageDataViewHolder> mFirebaseAdapter = new FirebaseRecyclerAdapter<MessageData, MessageActivity.MessageDataViewHolder>(options) {
+        mFirebaseAdapter = new FirebaseRecyclerAdapter<MessageData, MessageActivity.MessageDataViewHolder>(options) {
             @NonNull
             @Override
             public MessageActivity.MessageDataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -141,13 +210,21 @@ public class MessageActivity extends BaseActivity implements
             protected void onBindViewHolder(@NonNull final MessageActivity.MessageDataViewHolder holder, int position, @NonNull final MessageData model) {
 
                 CommonService.Database = FirebaseDatabase.getInstance().getReference();
+
                 CommonService.Database.child("messageData").child(chatringRoomId).addValueEventListener(new ValueEventListener() {
+
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                        MessageData messageData = dataSnapshot.getValue(MessageData.class);
+                        if (model.MessageId != null) {
 
-                        if (messageData  != null) {
+                            holder.messageId = model.MessageId;
+
+                            if (dataSnapshot.child(model.MessageId) .child("readUser").child(CommonService.UserInfo.uid).getValue() == null){
+                                DatabaseReference messageInfo= FirebaseDatabase.getInstance().getReference();
+                                messageInfo.child("messageData").child(chatringRoomId).child(model.MessageId).child("readUser").child(CommonService.UserInfo.uid).setValue(true);
+                            }
+
                             if (model.SendUser.equals(CommonService.UserInfo.uid)) {
                                 //# 내가보낸 메세지
                                 holder.sendLayout.setVisibility(View.VISIBLE);
@@ -158,6 +235,9 @@ public class MessageActivity extends BaseActivity implements
 
                                 holder.imgUser.setImageResource(android.R.color.transparent);
 
+                                if (dataSnapshot.child(model.MessageId) .child("readUser").child(userList.get(0)).getValue() != null){
+                                    holder.txtMyRead.setVisibility(View.GONE);
+                                }
                             } else {
                                 //# 받은 메세지
                                 holder.sendLayout.setVisibility(View.GONE);
@@ -165,6 +245,10 @@ public class MessageActivity extends BaseActivity implements
 
                                 holder.txtMsg.setText(model.Message);
                                 holder.txtTime.setText(mSimpleDateFormat.format(model.Time));
+
+                                if (dataSnapshot.child(model.MessageId) .child("readUser").child(CommonService.UserInfo.uid).getValue() != null){
+                                    holder.txtRead.setVisibility(View.GONE);
+                                }
 
                                 CommonService.Database = FirebaseDatabase.getInstance().getReference();
                                 CommonService.Database.child("users").child(model.SendUser).addValueEventListener(new ValueEventListener() {
@@ -202,6 +286,8 @@ public class MessageActivity extends BaseActivity implements
                                 });
 
                             }
+
+
                         }
                     }
 
@@ -268,16 +354,21 @@ public class MessageActivity extends BaseActivity implements
         messageData.Message = this.txtMessage.getText().toString();
         messageData.Time = System.currentTimeMillis();
 
+
         CommonService.Database = FirebaseDatabase.getInstance().getReference();
         DatabaseReference messageUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
 
-        CommonService.Database.child("messageData").child(this.chatringRoomId).child(Objects.requireNonNull(messageUid.getKey())).setValue(messageData);
+        messageData.MessageId = messageUid.getKey();
+
+        CommonService.Database.child("messageData").child(this.chatringRoomId).child(messageData.MessageId).setValue(messageData);
 
         this.txtMessage.setText("");
 
-        //# 키보드 닫기
-        ((InputMethodManager) Objects.requireNonNull(this.getSystemService(Context.INPUT_METHOD_SERVICE)))
-                .hideSoftInputFromWindow(this.txtMessage.getWindowToken(), 0);
+        recyclerView.scrollToPosition(mFirebaseAdapter.getItemCount() - 1);
+
+//        //# 키보드 닫기
+//        ((InputMethodManager) Objects.requireNonNull(this.getSystemService(Context.INPUT_METHOD_SERVICE)))
+//                .hideSoftInputFromWindow(this.txtMessage.getWindowToken(), 0);
     }
     //endregion -- SendMessage() : 메세지 전송 --
 

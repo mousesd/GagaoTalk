@@ -125,8 +125,16 @@ public class UserActivity extends BaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
 
+        this.txtName = findViewById(R.id.name);
+        this.txtPhoneNum = findViewById(R.id.phoneNum);
+        this.txtStateMsg = findViewById(R.id.stateMsg);
+        this.imgProfile = findViewById(R.id.imgProfile);
+
+
         Intent intent = getIntent();
         String extraUid = intent.getStringExtra("uid");
+
+
 
         if (extraUid == null || extraUid.equals("")){
 
@@ -159,6 +167,10 @@ public class UserActivity extends BaseActivity implements
             btnChat.setVisibility(View.VISIBLE);
             btnCall.setVisibility(View.VISIBLE);
 
+            this.txtName.setEnabled(false);
+            this.txtStateMsg.setEnabled(false);
+            this.txtPhoneNum.setEnabled(false);
+
             this.uid = extraUid;
             CommonService.Database = FirebaseDatabase.getInstance().getReference("users").child(extraUid);
             CommonService.Database.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -172,10 +184,6 @@ public class UserActivity extends BaseActivity implements
                         phoneNum = tempUserInfo.phoneNum;
                         stateMsg = tempUserInfo.stateMsg;
                         hasImage = tempUserInfo.hasImage;
-
-                        txtName = findViewById(R.id.name);
-                        txtPhoneNum = findViewById(R.id.phoneNum);
-                        txtStateMsg = findViewById(R.id.stateMsg);
 
                         txtName.setText(name);
                         txtPhoneNum.setText(phoneNum);
@@ -212,11 +220,6 @@ public class UserActivity extends BaseActivity implements
             });
 
         }
-
-        this.txtName = findViewById(R.id.name);
-        this.txtPhoneNum = findViewById(R.id.phoneNum);
-        this.txtStateMsg = findViewById(R.id.stateMsg);
-        this.imgProfile = findViewById(R.id.imgProfile);
 
 
         this.txtName.setText(this.name);
@@ -420,7 +423,6 @@ public class UserActivity extends BaseActivity implements
 //
 //            Bitmap bitmap = BitmapFactory.decodeFile(imagePath);//경로를 통해 비트맵으로 전환
             imgProfile.setImageURI(imgUri);
-            imgProfile.setTag(imgUri);
             //setImageBitmap(rotate(bitmap, exifDegree));//이미지 뷰에 비트맵 넣기
     }
     //endregion -- SetPicture() : 이미지 설정 --

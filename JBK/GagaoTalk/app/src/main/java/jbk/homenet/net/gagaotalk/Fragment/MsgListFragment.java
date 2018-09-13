@@ -19,6 +19,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.firebase.ui.storage.images.FirebaseImageLoader;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
@@ -61,6 +62,8 @@ public class MsgListFragment extends Fragment {
     //endregion == [ ViewHolder Class ] ==
 
     private final SimpleDateFormat mSimpleDateFormat = new SimpleDateFormat("a h:mm", Locale.getDefault());
+
+    private String lastMessageId;
 
     //region == [ Override Methods ] ==
 
@@ -138,8 +141,10 @@ public class MsgListFragment extends Fragment {
 
                                     while (child.hasNext()) {
                                         MessageData messageData = child.next().getValue(MessageData.class);
+                                        lastMessageId = messageData.MessageId;
 
                                         if (messageData != null) {
+
                                             holder.txtLastMsg.setText(messageData.Message);
                                             holder.txtLastTime.setText(mSimpleDateFormat.format(messageData.Time));
                                         }
@@ -160,6 +165,11 @@ public class MsgListFragment extends Fragment {
                             public void onClick(View v) {
                                 Intent intent = new Intent(getActivity(), MessageActivity.class);
                                 intent.putExtra("chatingRoomId", model.ChatingRoomId);
+
+                                DatabaseReference lastReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
+
+                                lastReadMessageDataBase.child("chatingRoom").child(CommonService.UserInfo.uid).child(model.ChatingRoomId).child("LastReadMessageId").setValue(lastMessageId);
+
                                 startActivity(intent);
                             }
                         });
