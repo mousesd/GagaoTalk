@@ -6,12 +6,20 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.messaging.FirebaseMessaging;
 
+import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Fragment.MsgListFragment;
 import jbk.homenet.net.gagaotalk.Fragment.SettingFragment;
 import jbk.homenet.net.gagaotalk.Fragment.UserListFragment;
@@ -27,6 +35,17 @@ public class MainFrameActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainframe);
 
+        //if (CommonService.UserInfo.tokenId == null || CommonService.UserInfo.tokenId.equals("")){
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,  new OnSuccessListener<InstanceIdResult>() {
+                @Override
+                public void onSuccess(InstanceIdResult instanceIdResult) {
+                    String newToken = instanceIdResult.getToken();
+                    Log.e("newToken",newToken);
+                    DatabaseReference messageInfo= FirebaseDatabase.getInstance().getReference();
+                    messageInfo.child("users").child(CommonService.UserInfo.uid).child("tokenId").setValue(newToken);
+                }
+            });
+        //}
 
         // Create the adapter that will return a fragment for each section
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {

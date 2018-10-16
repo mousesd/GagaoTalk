@@ -9,12 +9,15 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
 import jbk.homenet.net.gagaotalk.Activity.MainActivity;
+import jbk.homenet.net.gagaotalk.Activity.MainFrameActivity;
 import jbk.homenet.net.gagaotalk.R;
 
 public class ServiceFireBaseMessaging extends FirebaseMessagingService {
@@ -27,12 +30,28 @@ public class ServiceFireBaseMessaging extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
         Map<String, String> pushDataMap = remoteMessage.getData();
         sendNotification(pushDataMap);
     }
 
+    @Override
+    public void onNewToken(String s) {
+        super.onNewToken(s);
+
+        if (CommonService.UserInfo != null){
+            DatabaseReference messageInfo= FirebaseDatabase.getInstance().getReference();
+            messageInfo.child("users").child(CommonService.UserInfo.uid).child("tokenId").setValue(s);
+        }
+    }
+
+    @Override
+    public void onSendError(String s, Exception e) {
+        super.onSendError(s, e);
+    }
+
     private void sendNotification(Map<String, String> dataMap) {
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, MainFrameActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
@@ -40,8 +59,8 @@ public class ServiceFireBaseMessaging extends FirebaseMessagingService {
 
         NotificationCompat.Builder nBuilder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(dataMap.get("title"))
-                .setContentText(dataMap.get("msg"))
+                .setContentTitle(dataMap.get("from_user)"))
+                .setContentText(dataMap.get("contents"))
                 .setAutoCancel(true)
                 .setSound(defaultSoundUri)
                 .setVibrate(new long[]{1000, 1000})

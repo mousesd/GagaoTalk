@@ -18,6 +18,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 
 import com.firebase.ui.storage.images.FirebaseImageLoader;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.StorageReference;
 
@@ -104,9 +105,9 @@ public class UserListFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        CommonService.Database = FirebaseDatabase.getInstance().getReference("users");
+        DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("users");
 
-        FirebaseRecyclerOptions<UserInfo> options = new FirebaseRecyclerOptions.Builder<UserInfo>().setQuery(CommonService.Database, UserInfo.class).build();
+        FirebaseRecyclerOptions<UserInfo> options = new FirebaseRecyclerOptions.Builder<UserInfo>().setQuery(userDB, UserInfo.class).build();
 
         FirebaseRecyclerAdapter<UserInfo, UserListViewHolder > mFirebaseAdapter = new FirebaseRecyclerAdapter<UserInfo, UserListViewHolder >(options) {
             @Override

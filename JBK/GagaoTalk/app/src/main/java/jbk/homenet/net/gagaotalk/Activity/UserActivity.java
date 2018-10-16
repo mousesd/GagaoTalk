@@ -172,8 +172,8 @@ public class UserActivity extends BaseActivity implements
             this.txtPhoneNum.setEnabled(false);
 
             this.uid = extraUid;
-            CommonService.Database = FirebaseDatabase.getInstance().getReference("users").child(extraUid);
-            CommonService.Database.addListenerForSingleValueEvent(new ValueEventListener() {
+            DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("users").child(extraUid);
+            userDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     UserInfo tempUserInfo = dataSnapshot.getValue(UserInfo.class);
@@ -343,7 +343,7 @@ public class UserActivity extends BaseActivity implements
             return;
         }
 
-        CommonService.Database = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
 
         //String uid, String name, String email, String stateMsg, String phoneNum
         CommonService.UserInfo = new UserInfo(this.uid, this.txtName.getText().toString(),this.email, this.txtStateMsg.getText().toString(), this.txtPhoneNum.getText().toString());
@@ -372,16 +372,16 @@ public class UserActivity extends BaseActivity implements
                     //# 사용자 정보 저장
                     CommonService.UserInfo.hasImage = true;
 
-                    CommonService.Database = FirebaseDatabase.getInstance().getReference();
-                    CommonService.Database.child("users").child(uid).setValue(CommonService.UserInfo);
+                    DatabaseReference usersaveDB = FirebaseDatabase.getInstance().getReference();
+                    usersaveDB.child("users").child(uid).setValue(CommonService.UserInfo);
                 }
             });
         } else {
             //# 사용자 정보 저장
             CommonService.UserInfo.hasImage = false;
 
-            CommonService.Database = FirebaseDatabase.getInstance().getReference();
-            CommonService.Database.child("users").child(this.uid).setValue(CommonService.UserInfo);
+            DatabaseReference usersaveDB = FirebaseDatabase.getInstance().getReference();
+            usersaveDB.child("users").child(this.uid).setValue(CommonService.UserInfo);
         }
 
         Intent intent = new Intent(UserActivity.this, MainFrameActivity.class);
@@ -429,9 +429,9 @@ public class UserActivity extends BaseActivity implements
 
     private void SetChatingRoom(){
 
-        CommonService.Database = FirebaseDatabase.getInstance().getReference();
+        final DatabaseReference chatingRoomDB = FirebaseDatabase.getInstance().getReference();
 
-        CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        chatingRoomDB.child("chatingRoom").child(CommonService.UserInfo.uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -456,24 +456,24 @@ public class UserActivity extends BaseActivity implements
 
 
                 ChatingRoomInfo chatingRoomInfo = new ChatingRoomInfo();
-                DatabaseReference chatingRoomUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
+
+
+                DatabaseReference chatingRoomUid = chatingRoomDB.child("chatingRoom").child(CommonService.UserInfo.uid).push();
                 chatingRoomInfo.ChatingRoomId = chatingRoomUid.getKey();
                 chatingRoomInfo.TargetUser = uid;
 
                 //# 내 채팅 목록추가
-                CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
+                chatingRoomDB.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
 
                 //# 상대 채팅 목록 추가
                 chatingRoomInfo.TargetUser = CommonService.UserInfo.uid;
-                CommonService.Database.child("chatingRoom").child(uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
+                chatingRoomDB.child("chatingRoom").child(uid).child(chatingRoomInfo.ChatingRoomId).setValue(chatingRoomInfo);
 
                 Intent intent = new Intent(UserActivity.this, MessageActivity.class);
                 intent.putExtra("chatingRoomId", chatingRoomInfo.ChatingRoomId);
 
                 startActivity(intent);
                 finish();
-
-
             }
 
             @Override

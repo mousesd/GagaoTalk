@@ -8,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -70,9 +71,9 @@ public class MainActivity  extends BaseActivity
             finish();
         } else {
             //# 인증정보가 있는 경우 사용자 설정 체크
-            CommonService.Database = FirebaseDatabase.getInstance().getReference("users").child(FirbaseService.FirebaseUser.getUid());
+            DatabaseReference userDB = FirebaseDatabase.getInstance().getReference("users").child(FirbaseService.FirebaseUser.getUid());
 
-            CommonService.Database.addListenerForSingleValueEvent(new ValueEventListener() {
+            userDB.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     CommonService.UserInfo = dataSnapshot.getValue(UserInfo.class);

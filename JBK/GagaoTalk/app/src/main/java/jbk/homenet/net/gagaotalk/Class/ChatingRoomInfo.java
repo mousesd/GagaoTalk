@@ -12,4 +12,5 @@ public class ChatingRoomInfo {
 
     public String  TargetUser;
     public String  ChatingRoomId;
+    public String  LastReadMessageId;
 }

@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "96296146646",
+    "firebase_url": "https://gagaotalk-1c391.firebaseio.com",
+    "project_id": "gagaotalk-1c391",
+    "storage_bucket": "gagaotalk-1c391.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:96296146646:android:1a61321849935c7b",
+        "android_client_info": {
+          "package_name": "jbk.homenet.net.gagaotalk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "96296146646-p2cjt4f7ij00jnvc0rbgbgcv79fegr7b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "jbk.homenet.net.gagaotalk",
+            "certificate_hash": "3e1c6158e584dae41563133fba3775521ecf8b36"
+          }
+        },
+        {
+          "client_id": "96296146646-6nkg7kme8fpcu15oj58icq5g0a08ki10.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFHj9f-aphrrRNLY-BUL09wrcB3YILDwE"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "96296146646-6nkg7kme8fpcu15oj58icq5g0a08ki10.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

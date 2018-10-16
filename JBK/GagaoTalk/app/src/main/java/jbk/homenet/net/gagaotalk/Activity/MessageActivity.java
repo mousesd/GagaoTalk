@@ -1,17 +1,20 @@
 package jbk.homenet.net.gagaotalk.Activity;
 
 
-import android.content.Context;
+
 import android.content.Intent;
+
 import android.support.annotation.NonNull;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
+
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,15 +31,30 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+
 import com.google.firebase.storage.StorageReference;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
-import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
 import jbk.homenet.net.gagaotalk.Class.MessageData;
@@ -116,6 +134,10 @@ public class MessageActivity extends BaseActivity implements
 
     private List<String> userList = new ArrayList<String>();
 
+    private UserInfo targetUserInfo;
+
+
+    RequestQueue queue;
     //endregion == [ Fields ] ==
 
     //region == [ Override Methods ] ==
@@ -136,6 +158,8 @@ public class MessageActivity extends BaseActivity implements
         this.txtMessage = findViewById(R.id.txtMsg);
         this.recyclerView = findViewById(R.id.listChating);
 
+        queue = Volley.newRequestQueue(getApplicationContext());
+
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
@@ -150,6 +174,22 @@ public class MessageActivity extends BaseActivity implements
 
                 assert data != null;
                 userList.add(data);
+
+
+                DatabaseReference targetUser = FirebaseDatabase.getInstance().getReference();
+                targetUser.child("users").child(userList.get(0)).addValueEventListener(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                        targetUserInfo = dataSnapshot.getValue(UserInfo.class);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
 
             @Override
@@ -158,9 +198,9 @@ public class MessageActivity extends BaseActivity implements
             }
         });
 
-        CommonService.Database = FirebaseDatabase.getInstance().getReference("messageData").child(this.chatringRoomId);
+        DatabaseReference messageDataDB = FirebaseDatabase.getInstance().getReference("messageData").child(this.chatringRoomId);
 
-        CommonService.Database.addChildEventListener(new ChildEventListener() {
+        messageDataDB.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -193,7 +233,7 @@ public class MessageActivity extends BaseActivity implements
             }
         });
 
-        FirebaseRecyclerOptions<MessageData> options = new FirebaseRecyclerOptions.Builder<MessageData>().setQuery(CommonService.Database, MessageData.class).build();
+        FirebaseRecyclerOptions<MessageData> options = new FirebaseRecyclerOptions.Builder<MessageData>().setQuery(messageDataDB, MessageData.class).build();
 
         mFirebaseAdapter = new FirebaseRecyclerAdapter<MessageData, MessageActivity.MessageDataViewHolder>(options) {
             @NonNull
@@ -209,9 +249,9 @@ public class MessageActivity extends BaseActivity implements
             @Override
             protected void onBindViewHolder(@NonNull final MessageActivity.MessageDataViewHolder holder, int position, @NonNull final MessageData model) {
 
-                CommonService.Database = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference msgDataDB = FirebaseDatabase.getInstance().getReference();
 
-                CommonService.Database.child("messageData").child(chatringRoomId).addValueEventListener(new ValueEventListener() {
+                msgDataDB.child("messageData").child(chatringRoomId).addValueEventListener(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -250,8 +290,8 @@ public class MessageActivity extends BaseActivity implements
                                     holder.txtRead.setVisibility(View.GONE);
                                 }
 
-                                CommonService.Database = FirebaseDatabase.getInstance().getReference();
-                                CommonService.Database.child("users").child(model.SendUser).addValueEventListener(new ValueEventListener() {
+                                DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
+                                userDB.child("users").child(model.SendUser).addValueEventListener(new ValueEventListener() {
 
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -284,10 +324,7 @@ public class MessageActivity extends BaseActivity implements
 
                                     }
                                 });
-
                             }
-
-
                         }
                     }
 
@@ -339,6 +376,15 @@ public class MessageActivity extends BaseActivity implements
     }
     //endregion -- onClick() : onClick --
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event)
+    {
+        if ((keyCode == KeyEvent.KEYCODE_BACK))
+        {
+            finish();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
     //endregion == [ Override Methods ] ==
 
     //region == [ Methods ] ==
@@ -354,15 +400,17 @@ public class MessageActivity extends BaseActivity implements
         messageData.Message = this.txtMessage.getText().toString();
         messageData.Time = System.currentTimeMillis();
 
-
-        CommonService.Database = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference messageUid = CommonService.Database.child("chatingRoom").child(CommonService.UserInfo.uid).push();
+        DatabaseReference chatingRoomDb = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference messageUid = chatingRoomDb.child("chatingRoom").child(CommonService.UserInfo.uid).push();
 
         messageData.MessageId = messageUid.getKey();
 
-        CommonService.Database.child("messageData").child(this.chatringRoomId).child(messageData.MessageId).setValue(messageData);
+        chatingRoomDb.child("messageData").child(this.chatringRoomId).child(messageData.MessageId).setValue(messageData);
 
+        send(this.txtMessage.getText().toString());
         this.txtMessage.setText("");
+
+
 
         recyclerView.scrollToPosition(mFirebaseAdapter.getItemCount() - 1);
 
@@ -371,6 +419,111 @@ public class MessageActivity extends BaseActivity implements
 //                .hideSoftInputFromWindow(this.txtMessage.getWindowToken(), 0);
     }
     //endregion -- SendMessage() : 메세지 전송 --
+
+    //region -- send() : fcm Push --
+    /**
+     * fcm Push
+     * @param input Message
+     */
+    public void send(String input) {
+
+        JSONObject requestData = new JSONObject();
+
+        try {
+            requestData.put("priority", "high");
+
+            JSONObject dataObj = new JSONObject();
+            dataObj.put("contents", input);
+            dataObj.put("from_user", CommonService.UserInfo.name);
+            requestData.put("data", dataObj);
+
+            JSONArray idArray = new JSONArray();
+            idArray.put(0, targetUserInfo.tokenId);
+            requestData.put("registration_ids", idArray);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        sendData(requestData, new SendResponseListener() {
+            @Override
+            public void onRequestCompleted() {
+
+            }
+
+            @Override
+            public void onRequestStarted() {
+
+            }
+
+            @Override
+            public void onRequestWithError(VolleyError error) {
+
+            }
+        });
+    }
+    //endregion -- send() : fcm Push --
+
+    //region -- SendResponseListener --
+    /**
+     * SendResponseListener
+     */
+    public interface SendResponseListener {
+        public void onRequestStarted();
+        public void onRequestCompleted();
+        public void onRequestWithError(VolleyError error);
+    }
+    //endregion -- SendResponseListener --
+
+    //region -- sendData() : SenData fcm Push --
+    /**
+     * SenData fcm Push
+     * @param requestData 전송데이터
+     * @param listener SendResponseListener
+     */
+    public void sendData(JSONObject requestData, final SendResponseListener listener) {
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                "https://fcm.googleapis.com/fcm/send",
+                requestData,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onRequestCompleted();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                listener.onRequestWithError(error);
+            }
+        }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String,String>();
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String,String>();
+                headers.put("Authorization", "key=AAAAFmuyltY:APA91bFzzMkOXyqVOH4d-3a6a9OM7bkcA9LHvKMawyssgdwNrIVScRJayRsMNfD-foAuee-Javpy0b3VS6eSorYGwRTtVPnQtBOKtuUWUXK9TiAdVSWKmQS98JGspn7bL3DDfm-bO0B_DNEBuGRGtiSk8mq5METwEw");
+
+                 return headers;
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
+
+        request.setShouldCache(false);
+        listener.onRequestStarted();
+        queue.add(request);
+    }
+    //endregion -- sendData() : SenData fcm Push --
 
     //endregion == [ Methods ] ==
 

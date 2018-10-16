@@ -8,9 +8,4 @@ public final class CommonService {
      * 사용자정보
      */
     public  static  UserInfo  UserInfo;
-
-    /**
-     * DatabaseReference
-     */
-    public static DatabaseReference Database;
 }

@@ -37,6 +37,10 @@ public class UserInfo {
      */
     public Boolean hasImage;
 
+    /**
+     * tokenId
+     */
+    public String tokenId;
     //endregion == [ Fields ] ==
 
     //region == [ Constructors ] ==

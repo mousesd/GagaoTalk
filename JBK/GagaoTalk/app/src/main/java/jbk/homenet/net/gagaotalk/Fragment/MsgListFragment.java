@@ -48,6 +48,7 @@ public class MsgListFragment extends Fragment {
         TextView txtUserNm;
         TextView txtLastMsg;
         TextView txtLastTime;
+        TextView txtNoReadCount;
 
         String chatingRoomid;
 
@@ -57,6 +58,7 @@ public class MsgListFragment extends Fragment {
             txtUserNm = itemView.findViewById(R.id.txtTargetUserNm);
             txtLastMsg= itemView.findViewById(R.id.txtLastMsg);
             txtLastTime = itemView.findViewById(R.id.txtMsgLastTime);
+            txtNoReadCount = itemView.findViewById(R.id.txtNoReadCount);
         }
     }
     //endregion == [ ViewHolder Class ] ==
@@ -88,9 +90,9 @@ public class MsgListFragment extends Fragment {
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        CommonService.Database = FirebaseDatabase.getInstance().getReference("chatingRoom").child(CommonService.UserInfo.uid);
+        DatabaseReference chatingRoomDb = FirebaseDatabase.getInstance().getReference("chatingRoom").child(CommonService.UserInfo.uid);
 
-        FirebaseRecyclerOptions<ChatingRoomInfo> options = new FirebaseRecyclerOptions.Builder<ChatingRoomInfo>().setQuery(CommonService.Database, ChatingRoomInfo.class).build();
+        FirebaseRecyclerOptions<ChatingRoomInfo> options = new FirebaseRecyclerOptions.Builder<ChatingRoomInfo>().setQuery(chatingRoomDb, ChatingRoomInfo.class).build();
 
         FirebaseRecyclerAdapter<ChatingRoomInfo, MsgListFragment.MsgListViewHolder> mFirebaseAdapter = new FirebaseRecyclerAdapter<ChatingRoomInfo, MsgListFragment.MsgListViewHolder>(options) {
             @NonNull
@@ -106,8 +108,8 @@ public class MsgListFragment extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull final MsgListFragment.MsgListViewHolder holder, int position, @NonNull final ChatingRoomInfo model) {
 
-                CommonService.Database = FirebaseDatabase.getInstance().getReference();
-                CommonService.Database.child("users").child(model.TargetUser).addValueEventListener(new ValueEventListener() {
+                DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
+                userDB.child("users").child(model.TargetUser).addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
@@ -116,6 +118,59 @@ public class MsgListFragment extends Fragment {
                         holder.txtUserNm.setText(tartgetUserInfo.name);
                         holder.chatingRoomid = model.ChatingRoomId;
 
+                        //# 마지막 메세지 정보 설정
+                        DatabaseReference lastReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
+                        lastReadMessageDataBase.child("messageData").child(model.ChatingRoomId).limitToLast(1).addValueEventListener(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+
+                                while (child.hasNext()) {
+                                    MessageData messageData = child.next().getValue(MessageData.class);
+                                    lastMessageId = messageData.MessageId;
+
+                                    if (messageData != null) {
+
+                                        holder.txtLastMsg.setText(messageData.Message);
+                                        holder.txtLastTime.setText(mSimpleDateFormat.format(messageData.Time));
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        //# 읽지 않은 메세지 카운트 표시
+                        DatabaseReference noReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
+                        noReadMessageDataBase.child("messageData").child(model.ChatingRoomId).orderByChild("MessageId").startAt(model.LastReadMessageId).addValueEventListener(new ValueEventListener() {
+
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                                long count = dataSnapshot.getChildrenCount();
+
+                                count = count - 1;
+                                if (count <= 0) {
+                                    holder.txtNoReadCount.setVisibility(View.GONE);
+                                } else {
+                                    holder.txtNoReadCount.setVisibility(View.VISIBLE);
+                                    holder.txtNoReadCount.setText(String.valueOf(count));
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        //# 이미지 설정
                         if (tartgetUserInfo.hasImage != null && tartgetUserInfo.hasImage) {
                             StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
                             StorageReference riversProfileRef = riversRootRef.child("profileImage");
@@ -128,34 +183,6 @@ public class MsgListFragment extends Fragment {
                                         .load(riversRef)
                                         .into(holder.imgUser);
                             }
-
-
-                            //# 마지막 메세지 정보 설정
-                            CommonService.Database = FirebaseDatabase.getInstance().getReference();
-                            CommonService.Database.child("messageData").child(model.ChatingRoomId).limitToLast(1).addValueEventListener(new ValueEventListener() {
-
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                                    Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-
-                                    while (child.hasNext()) {
-                                        MessageData messageData = child.next().getValue(MessageData.class);
-                                        lastMessageId = messageData.MessageId;
-
-                                        if (messageData != null) {
-
-                                            holder.txtLastMsg.setText(messageData.Message);
-                                            holder.txtLastTime.setText(mSimpleDateFormat.format(messageData.Time));
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                                }
-                            });
                         } else {
                             holder.imgUser.setImageResource(android.R.color.transparent);
                         }

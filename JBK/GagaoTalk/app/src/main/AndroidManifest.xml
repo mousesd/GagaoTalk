@@ -42,21 +42,17 @@
             android:name=".Activity.MainFrameActivity"
             android:screenOrientation="portrait"
             android:label="Gagao Talk" />
-        <activity
-            android:name=".UserListActivity"
-            android:screenOrientation="portrait"
-            android:label="친구목록" />
-        <activity
-            android:name=".MsgListActivity"
-            android:screenOrientation="portrait"
-            android:label="대화목록" />
-        <activity
-            android:name=".SettingActivity"
-            android:screenOrientation="portrait"
-            android:label="환경설정" />
+
         <activity android:name=".Activity.MessageActivity"
             android:screenOrientation="portrait"
             android:label="대화하기"/>
+        <!-- [START firebase_service] -->
+        <service
+            android:name=".Class.ServiceFireBaseMessaging">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <!-- [END firebase_service] -->
     </application>
-
 </manifest>
