@@ -38,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -55,8 +56,10 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 
+import jbk.homenet.net.gagaotalk.Class.ChatingRoomInfo;
 import jbk.homenet.net.gagaotalk.Class.CommonService;
 import jbk.homenet.net.gagaotalk.Class.FirbaseService;
+import jbk.homenet.net.gagaotalk.Class.FireBaseDataBaseRef;
 import jbk.homenet.net.gagaotalk.Class.MessageData;
 import jbk.homenet.net.gagaotalk.Class.UserInfo;
 import jbk.homenet.net.gagaotalk.R;
@@ -138,6 +141,13 @@ public class MessageActivity extends BaseActivity implements
 
 
     RequestQueue queue;
+
+
+    private FireBaseDataBaseRef _chatingRoomInfo;
+
+    private FireBaseDataBaseRef _messageDataDB;
+
+    private FireBaseDataBaseRef _msgDataDB;
     //endregion == [ Fields ] ==
 
     //region == [ Override Methods ] ==
@@ -163,18 +173,13 @@ public class MessageActivity extends BaseActivity implements
         final LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
+        DatabaseReference chatingRoomInfo = FirebaseDatabase.getInstance().getReference().child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId);
 
-        DatabaseReference chatingRoomInfo = FirebaseDatabase.getInstance().getReference();
-        chatingRoomInfo.child("messageData").child(CommonService.UserInfo.uid).child(chatringRoomId);
-        chatingRoomInfo.addValueEventListener(new ValueEventListener() {
+        chatingRoomInfo.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                String data = Objects.requireNonNull(dataSnapshot.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId).child("TargetUser").getValue()).toString();
-
-                assert data != null;
-                userList.add(data);
-
+                userList.add(dataSnapshot.child("TargetUser").getValue().toString());
 
                 DatabaseReference targetUser = FirebaseDatabase.getInstance().getReference();
                 targetUser.child("users").child(userList.get(0)).addValueEventListener(new ValueEventListener() {
@@ -198,9 +203,41 @@ public class MessageActivity extends BaseActivity implements
             }
         });
 
+//        chatingRoomInfo.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                String data = Objects.requireNonNull(dataSnapshot.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId).child("TargetUser").getValue()).toString();
+//
+//                assert data != null;
+//                userList.add(data);
+//
+//
+//                DatabaseReference targetUser = FirebaseDatabase.getInstance().getReference();
+//                targetUser.child("users").child(userList.get(0)).addValueEventListener(new ValueEventListener() {
+//
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                        targetUserInfo = dataSnapshot.getValue(UserInfo.class);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+
         DatabaseReference messageDataDB = FirebaseDatabase.getInstance().getReference("messageData").child(this.chatringRoomId);
 
-        messageDataDB.addChildEventListener(new ChildEventListener() {
+        _messageDataDB = new FireBaseDataBaseRef(messageDataDB, new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
@@ -232,6 +269,40 @@ public class MessageActivity extends BaseActivity implements
 
             }
         });
+//
+//
+//        messageDataDB.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//                MessageData messageData = dataSnapshot.getValue(MessageData.class);
+//
+//                DatabaseReference lastReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
+//
+//                //# 마지막 읽은 메세지 iD 저장
+//                lastReadMessageDataBase.child("chatingRoom").child(CommonService.UserInfo.uid).child(chatringRoomId).child("LastReadMessageId").setValue(messageData.MessageId);
+//            }
+//
+//            @Override
+//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
 
         FirebaseRecyclerOptions<MessageData> options = new FirebaseRecyclerOptions.Builder<MessageData>().setQuery(messageDataDB, MessageData.class).build();
 
@@ -249,9 +320,9 @@ public class MessageActivity extends BaseActivity implements
             @Override
             protected void onBindViewHolder(@NonNull final MessageActivity.MessageDataViewHolder holder, int position, @NonNull final MessageData model) {
 
-                DatabaseReference msgDataDB = FirebaseDatabase.getInstance().getReference();
+                DatabaseReference msgDataDB = FirebaseDatabase.getInstance().getReference().child("messageData").child(chatringRoomId);
 
-                msgDataDB.child("messageData").child(chatringRoomId).addValueEventListener(new ValueEventListener() {
+                _msgDataDB = new FireBaseDataBaseRef(msgDataDB, new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -275,7 +346,7 @@ public class MessageActivity extends BaseActivity implements
 
                                 holder.imgUser.setImageResource(android.R.color.transparent);
 
-                                if (dataSnapshot.child(model.MessageId) .child("readUser").child(userList.get(0)).getValue() != null){
+                                if (dataSnapshot.child(model.MessageId).child("readUser").child(userList.get(0)).getValue() != null){
                                     holder.txtMyRead.setVisibility(View.GONE);
                                 }
                             } else {
@@ -333,6 +404,89 @@ public class MessageActivity extends BaseActivity implements
 
                     }
                 });
+//
+//                msgDataDB.child("messageData").child(chatringRoomId).addValueEventListener(new ValueEventListener() {
+//
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                        if (model.MessageId != null) {
+//
+//                            holder.messageId = model.MessageId;
+//
+//                            if (dataSnapshot.child(model.MessageId) .child("readUser").child(CommonService.UserInfo.uid).getValue() == null){
+//                                DatabaseReference messageInfo= FirebaseDatabase.getInstance().getReference();
+//                                messageInfo.child("messageData").child(chatringRoomId).child(model.MessageId).child("readUser").child(CommonService.UserInfo.uid).setValue(true);
+//                            }
+//
+//                            if (model.SendUser.equals(CommonService.UserInfo.uid)) {
+//                                //# 내가보낸 메세지
+//                                holder.sendLayout.setVisibility(View.VISIBLE);
+//                                holder.postLayout.setVisibility(View.GONE);
+//
+//                                holder.txtMyMsg.setText(model.Message);
+//                                holder.txtMyTime.setText(mSimpleDateFormat.format(model.Time));
+//
+//                                holder.imgUser.setImageResource(android.R.color.transparent);
+//
+//                                if (dataSnapshot.child(model.MessageId) .child("readUser").child(userList.get(0)).getValue() != null){
+//                                    holder.txtMyRead.setVisibility(View.GONE);
+//                                }
+//                            } else {
+//                                //# 받은 메세지
+//                                holder.sendLayout.setVisibility(View.GONE);
+//                                holder.postLayout.setVisibility(View.VISIBLE);
+//
+//                                holder.txtMsg.setText(model.Message);
+//                                holder.txtTime.setText(mSimpleDateFormat.format(model.Time));
+//
+//                                if (dataSnapshot.child(model.MessageId) .child("readUser").child(CommonService.UserInfo.uid).getValue() != null){
+//                                    holder.txtRead.setVisibility(View.GONE);
+//                                }
+//
+//                                DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
+//                                userDB.child("users").child(model.SendUser).addValueEventListener(new ValueEventListener() {
+//
+//                                    @Override
+//                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//                                        UserInfo sendtUserInfo = dataSnapshot.getValue(UserInfo.class);
+//
+//                                        assert sendtUserInfo != null;
+//                                        holder.txtUserNm.setText(sendtUserInfo.name);
+//
+//                                        if (sendtUserInfo.hasImage != null && sendtUserInfo.hasImage) {
+//                                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//                                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+//                                            StorageReference riversRef = riversProfileRef.child("profileImage/" + sendtUserInfo.uid);
+//
+//                                            if (riversRef.getName().equals(sendtUserInfo.uid)) {
+//                                                // Load the image using Glide
+//                                                Glide.with(getApplicationContext())
+//                                                        .using(new FirebaseImageLoader())
+//                                                        .load(riversRef)
+//                                                        .into(holder.imgUser);
+//                                            }
+//                                        } else {
+//                                            holder.imgUser.setImageResource(android.R.color.transparent);
+//                                        }
+//
+//                                    }
+//
+//                                    @Override
+//                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//                    }
+//                });
             }
         };
 
@@ -384,6 +538,19 @@ public class MessageActivity extends BaseActivity implements
             finish();
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    @Override
+    protected void onDestroy()
+    {
+        super.onDestroy();
+        if (this._chatingRoomInfo != null)
+            this._chatingRoomInfo.detach();
+        if (this._messageDataDB != null)
+            this._messageDataDB.detach();
+        if (this._msgDataDB != null)
+            this._msgDataDB.detach();
     }
     //endregion == [ Override Methods ] ==
 

@@ -146,8 +146,8 @@ public class MsgListFragment extends Fragment {
                         });
 
                         //# 읽지 않은 메세지 카운트 표시
-                        DatabaseReference noReadMessageDataBase = FirebaseDatabase.getInstance().getReference();
-                        noReadMessageDataBase.child("messageData").child(model.ChatingRoomId).orderByChild("MessageId").startAt(model.LastReadMessageId).addValueEventListener(new ValueEventListener() {
+                        DatabaseReference noReadMessageDataBase = FirebaseDatabase.getInstance().getReference().child("messageData").child(model.ChatingRoomId);
+                        noReadMessageDataBase.orderByChild("MessageId").startAt(model.LastReadMessageId).addValueEventListener(new ValueEventListener() {
 
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

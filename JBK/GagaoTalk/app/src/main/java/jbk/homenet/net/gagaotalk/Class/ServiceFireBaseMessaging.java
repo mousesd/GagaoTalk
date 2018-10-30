@@ -31,8 +31,12 @@ public class ServiceFireBaseMessaging extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        Map<String, String> pushDataMap = remoteMessage.getData();
-        sendNotification(pushDataMap);
+        if (CommonService.UserInfo != null) {
+            if (CommonService.UserInfo.isPush){
+                Map<String, String> pushDataMap = remoteMessage.getData();
+                sendNotification(pushDataMap);
+            }
+        }
     }
 
     @Override

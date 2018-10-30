@@ -38,6 +38,8 @@
         completions."
     </string>
     <string name="logOut">로그아웃</string>
+    <string name="pushOn">알림 On</string>
+    <string name="pushOff">알림 Off</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

@@ -86,6 +86,11 @@ public class UserActivity extends BaseActivity implements
     private Boolean hasImage;
 
     /**
+     * Push 알림 여부
+     */
+    private Boolean isPush = true;
+
+    /**
      * 이름 EditText
      */
     private EditText txtName;
@@ -148,6 +153,8 @@ public class UserActivity extends BaseActivity implements
                 this.phoneNum = CommonService.UserInfo.phoneNum;
                 this.stateMsg = CommonService.UserInfo.stateMsg;
                 this.hasImage = CommonService.UserInfo.hasImage;
+
+                this.isPush = CommonService.UserInfo.isPush;
 
             } else{
                 //# 신규입력
@@ -346,7 +353,7 @@ public class UserActivity extends BaseActivity implements
         DatabaseReference userDB = FirebaseDatabase.getInstance().getReference();
 
         //String uid, String name, String email, String stateMsg, String phoneNum
-        CommonService.UserInfo = new UserInfo(this.uid, this.txtName.getText().toString(),this.email, this.txtStateMsg.getText().toString(), this.txtPhoneNum.getText().toString());
+        CommonService.UserInfo = new UserInfo(this.uid, this.txtName.getText().toString(),this.email, this.txtStateMsg.getText().toString(), this.txtPhoneNum.getText().toString(), this.isPush );
 
 //        //# 사용자 정보 저장
 //        CommonService.Database.child("users").child(this.uid).setValue(CommonService.UserInfo);

@@ -41,6 +41,11 @@ public class UserInfo {
      * tokenId
      */
     public String tokenId;
+
+    /**
+     * Push 알림여부
+     */
+    public Boolean isPush = true;
     //endregion == [ Fields ] ==
 
     //region == [ Constructors ] ==
@@ -59,13 +64,15 @@ public class UserInfo {
      * @param email 이메일
      * @param stateMsg 상태메세지
      * @param phoneNum 연락처
+     * @param isPush Push 알림여부
      */
-    public UserInfo(String uid, String name, String email, String stateMsg, String phoneNum) {
+    public UserInfo(String uid, String name, String email, String stateMsg, String phoneNum, Boolean isPush) {
         this.uid = uid;
         this.name = name;
         this.email = email;
         this.stateMsg = stateMsg;
         this.phoneNum = phoneNum;
+        this.isPush = isPush;
     }
     //endregion == [ Constructors ] ==
 
