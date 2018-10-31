@@ -21,19 +21,52 @@ import jbk.homenet.net.gagaotalk.R;
 
 public class SettingFragment extends Fragment {
 
+    //region == [ Fields ] ==
+
+    /**
+     * Context
+     */
     private Context context;
 
+    /**
+     * 알림설정 버튼
+     */
     private Button btnIsPush;
 
+    //endregion == [ Fields ] ==
+
+    //region == [ Constructor ] ==
+
+    /**
+     * 생성자
+     */
     public SettingFragment() {
         // Required empty public constructor
     }
 
+    //endregion == [ Constructor ] ==
+
+    //region == [ Override Methods ] ==
+
+    //region -- onCreate() : onCreate --
+    /**
+     * onCreate
+     * @param savedInstanceState savedInstanceState
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+    //endregion -- onCreate() : onCreate --
 
+    //region -- onCreateView() : onCreateView --
+    /**
+     * onCreateView
+     * @param inflater inflater
+     * @param container container
+     * @param savedInstanceState savedInstanceState
+     * @return View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -72,12 +105,26 @@ public class SettingFragment extends Fragment {
 
         return view;
     }
+    //endregion -- onCreateView() : onCreateView --
 
+    //region -- onDetach() : onDetach --
+    /**
+     * onDetach
+     */
     @Override
     public void onDetach() {
         super.onDetach();
     }
+    //endregion -- onDetach() : onDetach --
 
+    //endregion == [ Override Methods ] ==
+
+    //region == [ Methods ] ==
+
+    //region -- SetPush() : 알림설정 상태 변경 --
+    /**
+     * 알림설정 상태 변경
+     */
     private  void  SetPush()
     {
         CommonService.UserInfo.isPush = !CommonService.UserInfo.isPush;
@@ -88,9 +135,13 @@ public class SettingFragment extends Fragment {
         this.SetPushButtontext();
 
         Toast.makeText(this.context , this.btnIsPush.getText(), Toast.LENGTH_SHORT).show();
-
     }
+    //endregion -- SetPush() : 알림설정 상태 변경 --
 
+    //region -- SetPushButtontext() : 알림설정 버튼 상태 변경 --
+    /**
+     * 알림설정 버튼 상태 변경
+     */
     private void SetPushButtontext()
     {
         if (CommonService.UserInfo.isPush){
@@ -99,5 +150,7 @@ public class SettingFragment extends Fragment {
             this.btnIsPush.setText(R.string.pushOff);
         }
     }
+    //endregion -- SetPushButtontext() : 알림설정 버튼 상태 변경 --
 
+    //endregion == [ Methods ] ==
 }

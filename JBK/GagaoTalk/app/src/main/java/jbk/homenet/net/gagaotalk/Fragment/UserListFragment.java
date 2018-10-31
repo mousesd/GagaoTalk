@@ -74,9 +74,9 @@ public class UserListFragment extends Fragment {
         MyUserNm.setText(CommonService.UserInfo.name);
         MyStateMsg.setText(CommonService.UserInfo.stateMsg);
 
-        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-        StorageReference riversProfileRef = riversRootRef.child("profileImage");
-        StorageReference riversRef = riversProfileRef.child("profileImage/" + CommonService.UserInfo.uid );
+//        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//        StorageReference riversProfileRef = riversRootRef.child("profileImage");
+        StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + CommonService.UserInfo.uid );
 
         if (riversRef.getName().equals(CommonService.UserInfo.uid)){
 
@@ -124,9 +124,9 @@ public class UserListFragment extends Fragment {
                     holder.txtStateMsg.setText(model.stateMsg);
 
                     if (model.hasImage != null && model.hasImage) {
-                        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-                        StorageReference riversProfileRef = riversRootRef.child("profileImage");
-                        StorageReference riversRef = riversProfileRef.child("profileImage/" + model.uid);
+//                        StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//                        StorageReference riversProfileRef = riversRootRef.child("profileImage");
+                        StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + model.uid);
 
                         if (riversRef.getName().equals(model.uid)) {
 

@@ -199,9 +199,9 @@ public class UserActivity extends BaseActivity implements
                         if (hasImage != null && hasImage) {
 
                             // Reference to an image file in Firebase Storage
-                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
-                            StorageReference riversRef = riversProfileRef.child("profileImage/" + uid);
+//                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+                            StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + uid);
 
                             if (riversRef.getName().equals(uid)) {
 
@@ -236,9 +236,9 @@ public class UserActivity extends BaseActivity implements
         if (hasImage != null && hasImage) {
 
             // Reference to an image file in Firebase Storage
-            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-            StorageReference riversProfileRef = riversRootRef.child("profileImage");
-            StorageReference riversRef = riversProfileRef.child("profileImage/" + uid);
+//            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+            StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + uid);
 
             if (riversRef.getName().equals(uid)) {
 
@@ -359,10 +359,10 @@ public class UserActivity extends BaseActivity implements
 //        CommonService.Database.child("users").child(this.uid).setValue(CommonService.UserInfo);
 
         //# 이미지 저장
-        if (this.imgProfile.getTag() != null && !this.imgProfile.getTag().toString().equals("")){
-            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-            StorageReference riversProfileRef = riversRootRef.child("profileImage");
-            StorageReference riversRef = riversProfileRef.child("profileImage/" + this.uid );
+        if (selectUri != null && !selectUri.toString().equals("")){
+//            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+            StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + this.uid );
 
             riversRef.delete();
 

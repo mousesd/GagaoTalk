@@ -373,9 +373,9 @@ public class MessageActivity extends BaseActivity implements
                                         holder.txtUserNm.setText(sendtUserInfo.name);
 
                                         if (sendtUserInfo.hasImage != null && sendtUserInfo.hasImage) {
-                                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
-                                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
-                                            StorageReference riversRef = riversProfileRef.child("profileImage/" + sendtUserInfo.uid);
+//                                            StorageReference riversRootRef = FirbaseService.FirebaseStorage.getReference();
+//                                            StorageReference riversProfileRef = riversRootRef.child("profileImage");
+                                            StorageReference riversRef = FirbaseService.FirebaseStorage.getReference().child("profileImage/" + sendtUserInfo.uid);
 
                                             if (riversRef.getName().equals(sendtUserInfo.uid)) {
                                                 // Load the image using Glide
